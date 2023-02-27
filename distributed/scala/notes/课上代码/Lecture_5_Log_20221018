@@ -1,0 +1,297 @@
+Last login: Tue Oct 18 09:42:24 on ttys000
+lelechen@LELEs-MacBook-Pro ~ % export SPARK_HOME=/Users/supery/spark-3.3.0-bin-hadoop3
+
+export PATH=$PATH:$SPARK_HOME/bin
+lelechen@LELEs-MacBook-Pro ~ % spark-shell
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+22/10/18 18:22:08 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Spark context Web UI available at http://10.4.210.65:4040
+Spark context available as 'sc' (master = local[*], app id = local-1666088529676).
+Spark session available as 'spark'.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 3.3.0
+      /_/
+         
+Using Scala version 2.12.15 (Java HotSpot(TM) 64-Bit Server VM, Java 18.0.1.1)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> rdd.map(x => log(x))
+<console>:23: error: not found: value rdd
+       rdd.map(x => log(x))
+       ^
+
+scala> t.reduce((x,y) => DenseVector(x))
+<console>:23: error: not found: value t
+       t.reduce((x,y) => DenseVector(x))
+       ^
+<console>:23: error: not found: value DenseVector
+       t.reduce((x,y) => DenseVector(x))
+                         ^
+
+scala> import breeze.linalg._
+import breeze.linalg._
+
+scala> import breeze.stats.distributions._
+import breeze.stats.distributions._
+
+scala> val normal2D = new MultivariateGaussian(DenseVector(1.0, 2.0), DenseMatrix((1.0, 0.5), (0.5, 1.0)))
+22/10/18 18:58:10 WARN LAPACK: Failed to load implementation from: com.github.fommil.netlib.NativeSystemLAPACK
+22/10/18 18:58:10 WARN LAPACK: Failed to load implementation from: com.github.fommil.netlib.NativeRefLAPACK
+normal2D: breeze.stats.distributions.MultivariateGaussian =
+MultivariateGaussian(DenseVector(1.0, 2.0),1.0  0.5
+0.5  1.0  )
+
+scala> val RandomNumbers = normal2D.sample(5)
+22/10/18 18:59:50 WARN BLAS: Failed to load implementation from: com.github.fommil.netlib.NativeSystemBLAS
+22/10/18 18:59:50 WARN BLAS: Failed to load implementation from: com.github.fommil.netlib.NativeRefBLAS
+RandomNumbers: IndexedSeq[breeze.linalg.DenseVector[Double]] = Vector(DenseVector(-0.42454689911457466, 1.226012534078583), DenseVector(0.8699550021668752, 2.2736339722177847), DenseVector(0.8974973440108616, 1.8122989329411945), DenseVector(0.4864447175726724, 2.7329055388952583), DenseVector(-0.40139278785206023, 0.7017695099231791))
+
+scala> normal2D.mean
+res2: breeze.linalg.DenseVector[Double] = DenseVector(1.0, 2.0)
+
+scala> 
+
+scala> normal2D.variance
+res3: breeze.linalg.DenseMatrix[Double] =
+1.0  0.5
+0.5  1.0
+
+scala> 
+
+scala> RandomNumbers map(normal2D.pdf(_))
+res4: IndexedSeq[Double] = Vector(0.06645421637787413, 0.1688151947564867, 0.1805582602862731, 0.08383644941019615, 0.05425727284902635)
+
+scala> normal2D.pdf(DenseVector(1.0, 2.0))
+res5: Double = 0.18377629847393073
+
+scala> val data = sc.parallelize(Array(DenseVector(1.0, 2.0, 3.0), DenseVector(4.0, 5.0, 6.0), DenseVector(7.0, 8.0, 9.0)))
+data: org.apache.spark.rdd.RDD[breeze.linalg.DenseVector[Double]] = ParallelCollectionRDD[0] at parallelize at <console>:29
+
+scala> data.collect()
+[Stage 0:>                                                         (0 + 0) / 1                                                                              res6: Array[breeze.linalg.DenseVector[Double]] = Array(DenseVector(1.0, 2.0, 3.0), DenseVector(4.0, 5.0, 6.0), DenseVector(7.0, 8.0, 9.0))
+
+scala> val computation = data.map({s => s(1):*=2.0
+     | s})
+<console>:29: error: value :*= is not a member of Double
+  Expression does not convert to assignment because:
+    value :* is not a member of Double
+    expansion: s.update(1, s.apply(1).<$colon$times: error>(2.0))
+       val computation = data.map({s => s(1):*=2.0
+                                            ^
+
+scala> val computation = data.map({s => s(1)*=2.0
+     | s})
+computation: org.apache.spark.rdd.RDD[breeze.linalg.DenseVector[Double]] = MapPartitionsRDD[1] at map at <console>:29
+
+scala> computation.collect()
+res7: Array[breeze.linalg.DenseVector[Double]] = Array(DenseVector(1.0, 4.0, 3.0), DenseVector(4.0, 10.0, 6.0), DenseVector(7.0, 16.0, 9.0))
+
+scala> val computation = data.map({s => s(1)*=2.0; s})
+computation: org.apache.spark.rdd.RDD[breeze.linalg.DenseVector[Double]] = MapPartitionsRDD[2] at map at <console>:29
+
+scala> computation.collect()
+res8: Array[breeze.linalg.DenseVector[Double]] = Array(DenseVector(1.0, 4.0, 3.0), DenseVector(4.0, 10.0, 6.0), DenseVector(7.0, 16.0, 9.0))
+
+scala> computation.reduce((x,y) => x+y)
+res9: breeze.linalg.DenseVector[Double] = DenseVector(12.0, 30.0, 18.0)
+
+scala> val computation = data.map({s => s.t*s})
+computation: org.apache.spark.rdd.RDD[Double] = MapPartitionsRDD[3] at map at <console>:29
+
+scala> computation.collect()
+res10: Array[Double] = Array(14.0, 77.0, 194.0)
+
+scala> computation.reduce((x,y) => x+y)
+res11: Double = 285.0
+
+scala> val computation = data.map({s => s*s.t})
+computation: org.apache.spark.rdd.RDD[breeze.linalg.DenseMatrix[Double]] = MapPartitionsRDD[4] at map at <console>:29
+
+scala> computation.collect()
+res12: Array[breeze.linalg.DenseMatrix[Double]] =
+Array(1.0  2.0  3.0
+2.0  4.0  6.0
+3.0  6.0  9.0  , 16.0  20.0  24.0
+20.0  25.0  30.0
+24.0  30.0  36.0  , 49.0  56.0  63.0
+56.0  64.0  72.0
+63.0  72.0  81.0  )
+
+scala> computation.collect()(0)
+res13: breeze.linalg.DenseMatrix[Double] =
+1.0  2.0  3.0
+2.0  4.0  6.0
+3.0  6.0  9.0
+
+scala> computation.collect()(1)
+res14: breeze.linalg.DenseMatrix[Double] =
+16.0  20.0  24.0
+20.0  25.0  30.0
+24.0  30.0  36.0
+
+scala> computation.collect()(2)
+res15: breeze.linalg.DenseMatrix[Double] =
+49.0  56.0  63.0
+56.0  64.0  72.0
+63.0  72.0  81.0
+
+scala> computation.reduce((x,y) => x+y)
+res16: breeze.linalg.DenseMatrix[Double] =
+66.0  78.0   90.0
+78.0  93.0   108.0
+90.0  108.0  126.0
+
+scala> import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.ThreadLocalRandom
+
+scala> val r = TreadLocalRandom.current
+<console>:29: error: not found: value TreadLocalRandom
+       val r = TreadLocalRandom.current
+               ^
+
+scala> val r = ThreadLocalRandom.current
+r: java.util.concurrent.ThreadLocalRandom = java.util.concurrent.ThreadLocalRandom@5e4ae827
+
+scala> r.nextDouble
+res17: Double = 0.4247585676067225
+
+scala> r.nextDouble
+res18: Double = 0.5873433276687893
+
+scala> r.nextDouble
+res19: Double = 0.22170525848143274
+
+scala> r.nextDouble
+res20: Double = 0.003507088869162067
+
+scala> r.nextDouble
+res21: Double = 0.7970082681125619
+
+scala> r.nextDouble
+res22: Double = 0.5393936389971425
+
+scala> r.nextGaussian
+res23: Double = -0.3005461124321274
+
+scala> r.nextGaussian
+res24: Double = -1.1543325798402393
+
+scala> r.nextGaussian
+res25: Double = -1.7861651478749236
+
+scala> r.nextGaussian
+res26: Double = -0.9624491854683462
+
+scala> r.nextGaussian
+res27: Double = -0.9494869170232265
+
+scala> r.nextGaussian
+res28: Double = 2.1088268126313947
+
+scala> r.nextGaussian
+res29: Double = 0.142017132210009
+
+scala> r.nextGaussian
+res30: Double = -1.363292352905712
+
+scala> r.nextGaussian
+res31: Double = 0.26010896721402604
+
+scala> val ExpRV = (1 to 1000).map(x => r.nextDouble).map(x => -math.log(x))
+ExpRV: scala.collection.immutable.IndexedSeq[Double] = Vector(0.6618604840278606, 0.05921658783811054, 0.23086333971024148, 1.569915038578559, 1.0632251883142996, 0.13787444119982434, 0.43583819429455306, 3.474664464532659, 2.008946332160716, 0.11821149628079727, 0.13738542252738914, 0.4623565097914714, 0.7749390143519357, 0.12945974672632732, 1.6966967920712583, 0.26133070568352135, 4.150983811466233, 1.2727812510548282, 0.027696521941026286, 1.1092238888001833, 1.1962617311167254, 1.1676160702414675, 0.05954640176881976, 0.056863551101604015, 1.0415575700137354, 0.2778150372005978, 0.6467598499088985, 2.7480398427051895, 6.147426319461038, 0.3354952914812977, 0.8139696577306271, 0.7168544009403329, 2.39810238758041, 1.2235286291422238, 0.6472797951740034, 0.0...
+
+scala> val ExpRV = (1 to 1000).map(x => r.nextDouble).map(x => -math.log(x)).toArray
+ExpRV: Array[Double] = Array(0.5770882567716026, 1.5614566616253625, 0.3272966292935612, 1.7876333792350714, 0.0745748241589155, 0.19172933914030563, 1.8990361538128826, 2.2775653188746245, 0.28313730124729036, 0.31503467448215583, 0.8458190147473772, 0.58638197302115, 1.020807000244504, 0.9775823770820486, 1.065510615877778, 0.25524923078529604, 0.9217684703711759, 0.7699500483044249, 0.007307450401707707, 0.5997179410458813, 0.5465448213523679, 0.47925275573189685, 0.33786961316864655, 4.343972947840029, 0.0845261571080136, 0.0706603726169137, 0.0708437586284961, 0.7458671999549215, 0.6717223764614507, 0.5509910082146461, 1.4108226594306228, 1.0925988584898458, 0.3311382462398843, 0.06124591116677776, 0.4273501263864608, 0.3455220934803666, 3.5674692568905266...
+
+scala> ExpRV
+res32: Array[Double] = Array(0.5770882567716026, 1.5614566616253625, 0.3272966292935612, 1.7876333792350714, 0.0745748241589155, 0.19172933914030563, 1.8990361538128826, 2.2775653188746245, 0.28313730124729036, 0.31503467448215583, 0.8458190147473772, 0.58638197302115, 1.020807000244504, 0.9775823770820486, 1.065510615877778, 0.25524923078529604, 0.9217684703711759, 0.7699500483044249, 0.007307450401707707, 0.5997179410458813, 0.5465448213523679, 0.47925275573189685, 0.33786961316864655, 4.343972947840029, 0.0845261571080136, 0.0706603726169137, 0.0708437586284961, 0.7458671999549215, 0.6717223764614507, 0.5509910082146461, 1.4108226594306228, 1.0925988584898458, 0.3311382462398843, 0.06124591116677776, 0.4273501263864608, 0.3455220934803666, 3.5674692568905266...
+
+scala> ExpRV.min
+res33: Double = 0.00164264674370226
+
+scala> ExpRV.max
+res34: Double = 9.791252557745693
+
+scala> ExpRV.sorted
+res35: Array[Double] = Array(0.00164264674370226, 0.004743405799981016, 0.005248140379763341, 0.007137349251062559, 0.007307450401707707, 0.007382967777842858, 0.007800790456585207, 0.010062269228688588, 0.011203035975041178, 0.011330348999577453, 0.014090311827024886, 0.01616780761489958, 0.016545381619715194, 0.01756348435805426, 0.01923382389837376, 0.019910728713469616, 0.02095415690442498, 0.02196492663685473, 0.02219160885980292, 0.023738252002081614, 0.026118144415265675, 0.027054899174795397, 0.027824012009315138, 0.028682061316649632, 0.029257790785082022, 0.03194040916808764, 0.03206964851564636, 0.03270929691029405, 0.03369356870718354, 0.03504841250059529, 0.03784304724298406, 0.038920755920827985, 0.04046573834934285, 0.04103093314991866, 0.0420352...
+
+scala> ExpRV.reverse
+res36: Array[Double] = Array(1.261585875622884, 0.28809487526730093, 1.4747562053988927, 1.6251694396665257, 1.5113500859979705, 0.028682061316649632, 0.14414472383548457, 3.173030064938897, 0.849857314514788, 1.5094090673927314, 1.5244598786576409, 1.461685818043155, 1.8504203914374684, 0.02095415690442498, 0.19492919464940037, 4.2872198851055705, 1.1359284019294522, 0.44437775382076433, 0.12059618719944339, 0.6584622941104722, 0.514596204954718, 2.03869651035639, 0.8106956712585344, 0.04203523251223962, 0.10182672688661536, 2.1331874674061297, 0.12382180813740241, 0.12442105581943433, 0.12544017518411657, 1.736378074771053, 3.328172386093992, 0.18294858106480646, 0.5287473496242294, 0.22016967572156593, 0.7907665455411623, 1.2303791783871334, 0.28646894220839...
+
+scala> ExpRV.sorted.reverse
+res37: Array[Double] = Array(9.791252557745693, 7.309044131453557, 7.299014606017234, 5.982960791274349, 5.9724871872116445, 5.5168194182160235, 5.287586052471774, 4.973448195020124, 4.724430723847424, 4.723967170602381, 4.631654196757917, 4.4204873364814565, 4.415536490787669, 4.407098833245248, 4.35478980735762, 4.343972947840029, 4.2872198851055705, 4.197860732430772, 4.1334870735618585, 4.023339652243106, 3.897378272922511, 3.891584036611968, 3.8655240847058034, 3.825394966155281, 3.8026230834753347, 3.793992194744854, 3.772214300151388, 3.730631617040847, 3.7278271083726087, 3.6472875029920693, 3.5690173897940443, 3.5674692568905266, 3.522490870864644, 3.5105382496044726, 3.4774989267313923, 3.458224517608231, 3.4055086622778097, 3.396048356669447, 3.37761...
+
+scala> ExpRV.sum
+res38: Double = 1047.7397510815308
+
+scala> ExpRV.sum/1000.0
+res39: Double = 1.0477397510815307
+
+scala> Array(1,2,3).union(Array(4,5,6))
+res40: Array[Int] = Array(1, 2, 3, 4, 5, 6)
+
+scala> val ExpRV = (1 to 1000).map(x=>r.nextDouble).map(x=>-math.log(x)).toArray
+<console>:30: error: not found: value x
+       val ExpRV = (1 to 1000).map(x=>r.nextDouble).map(x=>-math.log(x)).toArray
+                                                        ^
+<console>:30: error: not found: value x
+       val ExpRV = (1 to 1000).map(x=>r.nextDouble).map(x=>-math.log(x)).toArray
+                                                                     ^
+
+scala> val ExpRV = (1 to 1000).map(x => r.nextDouble).map(x => -math.log(x)).toArray
+ExpRV: Array[Double] = Array(2.887630503095531, 1.9725595958189006, 0.5967516958652712, 1.3320621719298162, 0.08155320697931769, 1.0962264637863466, 1.355504543374222, 0.6788975703110405, 0.35979272613746704, 0.008923951282789373, 1.1360968359560715, 2.599370635045717, 1.8086375361873677, 0.34541285424728085, 1.467078405631562, 1.343051991176889, 0.4541318001409265, 0.4117458233735882, 2.540041745884891, 0.04080397486439374, 0.07144562322119737, 0.2996658172596387, 0.03169958876677543, 0.8866966341123146, 0.516732593686818, 0.03372292704724255, 2.953611940832697, 0.5859164812281508, 0.3145834122268117, 0.1701258152314706, 1.4087531291131443, 0.3321722217806943, 0.44380645805273794, 0.008698439194227763, 0.6008993040443051, 0.9313419109751784, 1.5529595994522105...
+
+
+import java.util.concurrent.ThreadLocalRandom
+
+val RowSize = sc.broadcast(200)
+val ColumnSize = sc.broadcast(5)
+val RowLength = sc.broadcast(2)
+val ColumnLength = sc.broadcast(1000)
+val NonZeroLength = 10
+val p = ColumnSize.value * ColumnLength.value
+
+val beta = (1 to p).map(_.toDouble).toArray[Double].map(i => {if(i<NonZeroLength+1) 2.0 else 0.0})
+val MyBeta = sc.broadcast(beta)
+
+val sigma = 1.0
+val Sigma = sc.broadcast(sigma)
+
+var indices = 0 until RowLength.value
+var ParallelIndices = sc.parallelize(indices, indices.length)
+
+val lines = ParallelIndices.map(s => {
+   val r = ThreadLocalRandom.current
+   def rn(n:Int)=(0 until n).map(x => r.nextGaussian).toArray[Double]
+   val beta = MyBeta.value
+   val sigma = Sigma.value
+   val rowsize = RowSize.value
+   val columnsize = ColumnSize.value
+   val columnlength = ColumnLength.value
+   var lines = new Array[String](rowsize)
+   val p = columnsize*columnlength
+   for(i <- 0 until rowsize)
+   {
+          var line=""
+          var y=0.0
+          for(j <- 0 until columnlength)
+          {
+               var x = rn(columnsize)
+               for(k <- 0 until columnsize)
+               {
+                    y+=beta(j*columnsize+k)*x(k)
+               }
+               var segment = x.map("%.4f" format _).reduce(_+" "+_)
+               line = line + "," + segment
+          }
+          y += sigma*r.nextGaussian
+          lines(i)="%.4f".format(y)+line+"\n"
+   }
+   lines.reduce(_+_)
+})
+

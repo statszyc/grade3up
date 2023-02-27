@@ -1,0 +1,61 @@
+import org.apache.spark.mllib.regression.LabeledPoint
+//import org.apache.spark.mllib.regression.LinearRegressionWithSGD
+//import org.apache.spark.mllib.regression.LinearRegressionModel
+//import org.apache.spark.ml.regression.LinearRegression
+import org.apache.spark.mllib.optimization.{LBFGS, LeastSquaresGradient, SquaredL2Updater}
+import org.apache.spark.mllib.util.MLUtils
+import org.apache.spark.mllib.linalg.Vectors
+import breeze.linalg._
+import breeze.numerics._
+import breeze.stats.distributions._
+import java.util.concurrent.ThreadLocalRandom
+
+val data = MLUtils.loadLibSVMFile(sc, "data/mllib/sample_linear_regression_data.txt")
+val numFeatures = data.take(1)(0).features.size
+
+val training = data.map(x => (x.label, MLUtils.appendBias(x.features))).cache()
+
+val numCorrections = 10
+val convergenceTol = 1e-4
+val maxNumIterations = 20
+val regParam = 1.0
+val initialWeightsWithIntercept = Vectors.dense(new Array[Double](numFeatures+1))
+
+val (weightsWithIntercept0, loss) = LBFGS.runLBFGS(
+training, 
+new LeastSquaresGradient(),
+new SquaredL2Updater(),
+numCorrections,
+convergenceTol,
+maxNumIterations,
+regParam,
+initialWeightsWithIntercept)
+
+val coefficients = DenseVector(weightsWithIntercept0.toArray.slice(0, weightsWithIntercept0.size - 1))
+val Intercept = weightsWithIntercept0(weightsWithIntercept0.size - 1)
+
+var lines = data.map(line => {
+    //val r = ThreadLocalRandom.current
+    val fitted = DenseVector(line.features.toArray).t*coefficients + Intercept
+    val residual = line.label - fitted
+    LabeledPoint(residual, line.features)
+})
+
+val transit = lines.map(line => {
+    val r = ThreadLocalRandom.current
+    val fitted = DenseVector(line.features.toArray).t*coefficients + Intercept
+    LabeledPoint(fitted + r.nextGaussian * line.label, line.features)
+})
+
+val training = transit.map(x => (x.label, MLUtils.appendBias(x.features))).cache()
+
+val (weightsWithIntercept, loss) = LBFGS.runLBFGS(
+training, 
+new LeastSquaresGradient(),
+new SquaredL2Updater(),
+numCorrections,
+convergenceTol,
+maxNumIterations,
+regParam,
+initialWeightsWithIntercept)
+

@@ -1,0 +1,29 @@
+import scala.collection.JavaConverters._
+import scala.util.Random
+import org.apache.spark.rdd.PairRDDFunctions
+import org.apache.spark.HashPartitioner
+
+val n = 2000000
+val points = sc.parallelize(0 until n).map{ iter => 
+    val random = new Random()
+    val u = random.nextDouble()
+    val mykey = if(u<0.5) 1 else 2
+    (mykey, random.nextGaussian())
+}.partitionBy(new HashPartitioner(2)).persist()
+
+val K = points.partitions.size
+val SampleFractions = List((1, 0.004),(2, 0.004)).toMap
+
+val SampledPoints = points.sampleByKey(false, SampleFractions)
+val N = SampledPoints.mapValues(x=>1).reduceByKey((x,y)=> x+y)
+
+val BootstrapFractions = List((1, 1.0), (2, 1.0)).toMap
+val BootstrappedPoints = SampledPoints.sampleByKeyExact(true, BootstrapFractions)
+val EstBootSum = BootstrappedPoints.reduceByKey((x,y) => x+y)
+val EstBootMu = EstBootSum.join(N).mapValues(x => x._1/x._2)
+
+val UpdatedPoints = BootstrappedPoints.join(EstBootMu)
+val Est2thMomSum = UpdatedPoints.mapValues(x=> (x._1 - x._2)*(x._1 - x._2)).reduceByKey((x,y)=> x+y)
+
+val Est2thMom = Est2thMomSum.join(N).mapValues(x => x._1/x._2)
+val MetaEst2thMom = Est2thMom.values.reduce((x,y)=> x+y)/K

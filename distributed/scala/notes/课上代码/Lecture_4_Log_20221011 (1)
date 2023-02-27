@@ -1,0 +1,1225 @@
+Last login: Tue Oct 11 16:02:59 on ttys000
+lelechen@LELEs-MacBook-Pro ~ % export SPARK_HOME=/Users/supery/spark-3.3.0-bin-hadoop3
+
+export PATH=$PATH:$SPARK_HOME/bin
+lelechen@LELEs-MacBook-Pro ~ % spark-shell
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+22/10/11 18:41:33 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Spark context Web UI available at http://10.4.200.43:4040
+Spark context available as 'sc' (master = local[*], app id = local-1665484894555).
+Spark session available as 'spark'.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 3.3.0
+      /_/
+         
+Using Scala version 2.12.15 (Java HotSpot(TM) 64-Bit Server VM, Java 18.0.1.1)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> val a=DenseMatrix((0.17,0.11,0.07,0.10,0.04),(0.11,0.16,0.07,0.09,0.05),(0.07,0.07,0.09,0.07,0.03),(0.10,0.09,0.07,0.16,0.03),(0.04,0.05,0.03,0.03,0.06))
+<console>:22: error: not found: value DenseMatrix
+       val a=DenseMatrix((0.17,0.11,0.07,0.10,0.04),(0.11,0.16,0.07,0.09,0.05),(0.07,0.07,0.09,0.07,0.03),(0.10,0.09,0.07,0.16,0.03),(0.04,0.05,0.03,0.03,0.06))
+             ^
+
+scala> 
+
+scala> 
+
+scala> 
+
+scala> 
+
+scala> import breeze.linalg._
+import breeze.linalg._
+
+scala> val a=DenseMatrix((0.17,0.11,0.07,0.10,0.04),(0.11,0.16,0.07,0.09,0.05),(0.07,0.07,0.09,0.07,0.03),(0.10,0.09,0.07,0.16,0.03),(0.04,0.05,0.03,0.03,0.06))
+a: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07  0.1   0.04
+0.11  0.16  0.07  0.09  0.05
+0.07  0.07  0.09  0.07  0.03
+0.1   0.09  0.07  0.16  0.03
+0.04  0.05  0.03  0.03  0.06
+
+scala> eig(a)
+22/10/11 18:44:26 WARN LAPACK: Failed to load implementation from: com.github.fommil.netlib.NativeSystemLAPACK
+22/10/11 18:44:26 WARN LAPACK: Failed to load implementation from: com.github.fommil.netlib.NativeRefLAPACK
+res0: breeze.linalg.eig.DenseEig =
+Eig(DenseVector(0.4253939960429207, 0.07635956684332165, 0.05809247061780503, 0.03675280160898894, 0.04340116488696337),DenseVector(0.0, 0.0, 0.0, 0.0, 0.0),-0.5520216214925445   -0.13525037844191246  -0.8100649503825562  ... (5 total)
+-0.5293341343878225   -0.5079438950590737   0.34124724469453555  ...
+-0.3486780745241735   0.06424689506354715   0.29271439723550113  ...
+-0.5023922052405363   0.7767687401071603    0.19828514347508833  ...
+-0.20273918229168844  -0.34088560466902146  0.31991620415073585  ...)
+
+scala> eig(a)$eigenvalues
+<console>:27: error: value $eigenvalues is not a member of breeze.linalg.eig.DenseEig
+       eig(a)$eigenvalues
+             ^
+
+scala> eig(a).eigenvalues
+res2: breeze.linalg.DenseVector[Double] = DenseVector(0.4253939960429207, 0.07635956684332165, 0.05809247061780503, 0.03675280160898894, 0.04340116488696337)
+
+scala> eig(a).eigenvectors
+res3: breeze.linalg.DenseMatrix[Double] =
+-0.5520216214925445   -0.13525037844191246  -0.8100649503825562  ... (5 total)
+-0.5293341343878225   -0.5079438950590737   0.34124724469453555  ...
+-0.3486780745241735   0.06424689506354715   0.29271439723550113  ...
+-0.5023922052405363   0.7767687401071603    0.19828514347508833  ...
+-0.20273918229168844  -0.34088560466902146  0.31991620415073585  ...
+
+scala> val V = eig(a).eigenvectors
+V: breeze.linalg.DenseMatrix[Double] =
+-0.5520216214925445   -0.13525037844191246  -0.8100649503825562  ... (5 total)
+-0.5293341343878225   -0.5079438950590737   0.34124724469453555  ...
+-0.3486780745241735   0.06424689506354715   0.29271439723550113  ...
+-0.5023922052405363   0.7767687401071603    0.19828514347508833  ...
+-0.20273918229168844  -0.34088560466902146  0.31991620415073585  ...
+
+scala> V*V.t
+22/10/11 18:46:51 WARN BLAS: Failed to load implementation from: com.github.fommil.netlib.NativeSystemBLAS
+22/10/11 18:46:51 WARN BLAS: Failed to load implementation from: com.github.fommil.netlib.NativeRefBLAS
+res4: breeze.linalg.DenseMatrix[Double] =
+0.9999999999999991      2.7755575615628914E-16   ... (5 total)
+2.7755575615628914E-16  1.000000000000001        ...
+-9.71445146547012E-17   1.6653345369377348E-16   ...
+2.498001805406602E-16   -2.0816681711721685E-16  ...
+-6.869504964868156E-16  -1.1657341758564144E-15  ...
+
+scala> diag(V*V.t)
+res5: breeze.linalg.DenseVector[Double] = DenseVector(0.9999999999999991, 1.000000000000001, 0.999999999999998, 0.9999999999999992, 1.0000000000000022)
+
+scala> val W = eig(a).eigenvalues
+W: breeze.linalg.DenseVector[Double] = DenseVector(0.4253939960429207, 0.07635956684332165, 0.05809247061780503, 0.03675280160898894, 0.04340116488696337)
+
+scala> a - V*diag(W)*V.t
+res6: breeze.linalg.DenseMatrix[Double] =
+1.942890293094024E-16   4.163336342344337E-17   ... (5 total)
+4.163336342344337E-17   0.0                     ...
+2.7755575615628914E-17  0.0                     ...
+1.1102230246251565E-16  5.551115123125783E-17   ...
+3.469446951953614E-17   2.7755575615628914E-17  ...
+
+scala> val error = a - V*diag(W)*V.t
+error: breeze.linalg.DenseMatrix[Double] =
+1.942890293094024E-16   4.163336342344337E-17   ... (5 total)
+4.163336342344337E-17   0.0                     ...
+2.7755575615628914E-17  0.0                     ...
+1.1102230246251565E-16  5.551115123125783E-17   ...
+3.469446951953614E-17   2.7755575615628914E-17  ...
+
+scala> error.toDenseVector
+res7: breeze.linalg.DenseVector[Double] = DenseVector(1.942890293094024E-16, 4.163336342344337E-17, 2.7755575615628914E-17, 1.1102230246251565E-16, 3.469446951953614E-17, 4.163336342344337E-17, 0.0, 0.0, 5.551115123125783E-17, 2.7755575615628914E-17, 2.7755575615628914E-17, -2.7755575615628914E-17, 8.326672684688674E-17, -2.7755575615628914E-17, -8.326672684688674E-17, 1.1102230246251565E-16, 5.551115123125783E-17, -1.3877787807814457E-17, 1.1102230246251565E-16, 1.734723475976807E-17, 3.469446951953614E-17, 2.7755575615628914E-17, -8.326672684688674E-17, 1.734723475976807E-17, -1.249000902703301E-16)
+
+scala> norm(error.toDenseVector)
+res8: Double = 3.5858039253722845E-16
+
+scala> val svd.SVD(u, d, v) = svd(a)
+u: breeze.linalg.DenseMatrix[Double] =
+-0.5520216214925445   0.13525037844191135   -0.8100649503825571  ... (5 total)
+-0.5293341343878223   0.5079438950590747    0.341247244694535    ...
+-0.34867807452417326  -0.06424689506354699  0.29271439723550186  ...
+-0.5023922052405363   -0.7767687401071605   0.19828514347508963  ...
+-0.2027391822916883   0.34088560466902157   0.3199162041507342   ...
+d: breeze.linalg.DenseVector[Double] = DenseVector(0.42539399604292116, 0.07635956684332162, 0.058092470617805064, 0.04340116488696339, 0.03675280160898894)
+v: breeze.linalg.DenseMatrix[Double] =
+-0.5520216214925446  -0.5293341343878225   -0.3486780745241733   ... (5 total)
+0.13525037844191123  0.5079438950590746    -0.0642...
+
+scala> norm((u - v.t).toDenseVector)
+res9: Double = 2.4148945880937642E-15
+
+scala> a
+res10: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07  0.1   0.04
+0.11  0.16  0.07  0.09  0.05
+0.07  0.07  0.09  0.07  0.03
+0.1   0.09  0.07  0.16  0.03
+0.04  0.05  0.03  0.03  0.06
+
+scala> a(::,0 to 2)
+res11: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07
+0.11  0.16  0.07
+0.07  0.07  0.09
+0.1   0.09  0.07
+0.04  0.05  0.03
+
+scala> val b = a(::,0 to 2)
+b: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07
+0.11  0.16  0.07
+0.07  0.07  0.09
+0.1   0.09  0.07
+0.04  0.05  0.03
+
+scala> val svd.SVD(u, d, v) = svd(b)
+u: breeze.linalg.DenseMatrix[Double] =
+-0.5847262587563399   -0.7382281133635373   0.19487889487021706   ... (5 total)
+-0.5628568936204275   0.6277735843788151    0.4680712643942523    ...
+-0.3542214853702293   0.19094969166815096   -0.8394758650702095   ...
+-0.42142651654118635  -0.04424618459401045  -0.19515527057586574  ...
+-0.1954843985663476   0.15000023265514775   0.011233882392693618  ...
+d: breeze.linalg.DenseVector[Double] = DenseVector(0.35914100293769985, 0.05608150264978233, 0.04767184776621826)
+v: breeze.linalg.DenseMatrix[Double] =
+-0.6573330584045433  -0.631715955515004  -0.4109114282619732
+-0.7400268139341191  0.6441163799099541  0.19358306689948956
+0.14238526955779499  0.4313340244861992  -0.8...
+
+scala> diag(d)
+res12: breeze.linalg.DenseMatrix[Double] =
+0.35914100293769985  0.0                  0.0
+0.0                  0.05608150264978233  0.0
+0.0                  0.0                  0.04767184776621826
+
+scala> DenseMatrix.zeros[Double](2,3)
+res13: breeze.linalg.DenseMatrix[Double] =
+0.0  0.0  0.0
+0.0  0.0  0.0
+
+scala> DenseMatrix.vertcat(diag(d), DenseMatrix.zeros[Double](2,3))
+res14: breeze.linalg.DenseMatrix[Double] =
+0.35914100293769985  0.0                  0.0
+0.0                  0.05608150264978233  0.0
+0.0                  0.0                  0.04767184776621826
+0.0                  0.0                  0.0
+0.0                  0.0                  0.0
+
+scala> val D = DenseMatrix.vertcat(diag(d), DenseMatrix.zeros[Double](2,3))
+D: breeze.linalg.DenseMatrix[Double] =
+0.35914100293769985  0.0                  0.0
+0.0                  0.05608150264978233  0.0
+0.0                  0.0                  0.04767184776621826
+0.0                  0.0                  0.0
+0.0                  0.0                  0.0
+
+scala> b
+res15: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07
+0.11  0.16  0.07
+0.07  0.07  0.09
+0.1   0.09  0.07
+0.04  0.05  0.03
+
+scala> norm((b - u*D*v).toDenseVector)
+res16: Double = 6.691626947686432E-17
+
+scala> rank(a)
+res17: Int = 5
+
+scala> rank(b)
+res18: Int = 3
+
+scala> b
+res19: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07
+0.11  0.16  0.07
+0.07  0.07  0.09
+0.1   0.09  0.07
+0.04  0.05  0.03
+
+scala> a
+res20: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07  0.1   0.04
+0.11  0.16  0.07  0.09  0.05
+0.07  0.07  0.09  0.07  0.03
+0.1   0.09  0.07  0.16  0.03
+0.04  0.05  0.03  0.03  0.06
+
+scala> sum(a(*,::))
+res21: breeze.linalg.DenseVector[Double] = DenseVector(0.49000000000000005, 0.48000000000000004, 0.33000000000000007, 0.45000000000000007, 0.21)
+
+scala> sum(a(::,*))
+res22: breeze.linalg.Transpose[breeze.linalg.DenseVector[Double]] = Transpose(DenseVector(0.49000000000000005, 0.48000000000000004, 0.33000000000000007, 0.45000000000000007, 0.21))
+
+scala> b
+res23: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07
+0.11  0.16  0.07
+0.07  0.07  0.09
+0.1   0.09  0.07
+0.04  0.05  0.03
+
+scala> b.rows
+res24: Int = 5
+
+scala> b.cols
+res25: Int = 3
+
+scala> val meancol = sum(a(*,::))/a.cols.toDouble
+meancol: breeze.linalg.DenseVector[Double] = DenseVector(0.098, 0.096, 0.06600000000000002, 0.09000000000000001, 0.041999999999999996)
+
+scala> a(::,*) - meancol
+res26: breeze.linalg.DenseMatrix[Double] =
+0.07200000000000001    0.011999999999999997     ... (5 total)
+0.013999999999999999   0.064                    ...
+0.00399999999999999    0.00399999999999999      ...
+0.009999999999999995   -1.3877787807814457E-17  ...
+-0.001999999999999995  0.008000000000000007     ...
+
+scala> val ca = a(::,*) - meancol
+ca: breeze.linalg.DenseMatrix[Double] =
+0.07200000000000001    0.011999999999999997     ... (5 total)
+0.013999999999999999   0.064                    ...
+0.00399999999999999    0.00399999999999999      ...
+0.009999999999999995   -1.3877787807814457E-17  ...
+-0.001999999999999995  0.008000000000000007     ...
+
+scala> val meanrow = sum(a(::,*))/a.rows.toDouble
+meanrow: breeze.linalg.Transpose[breeze.linalg.DenseVector[Double]] = Transpose(DenseVector(0.098, 0.096, 0.06600000000000002, 0.09000000000000001, 0.041999999999999996))
+
+scala> a(*,::) - meanrow
+<console>:28: error: could not find implicit value for parameter op: breeze.linalg.operators.OpSub.Impl2[breeze.linalg.BroadcastedRows[breeze.linalg.DenseMatrix[Double],breeze.linalg.DenseVector[Double]],breeze.linalg.Transpose[breeze.linalg.DenseVector[Double]],That]
+       a(*,::) - meanrow
+               ^
+
+scala> a(*,::) - meanrow.t
+res28: breeze.linalg.DenseMatrix[Double] =
+0.07200000000000001    0.013999999999999999   ... (5 total)
+0.011999999999999997   0.064                  ...
+-0.027999999999999997  -0.025999999999999995  ...
+0.0020000000000000018  -0.006000000000000005  ...
+-0.058                 -0.046                 ...
+
+scala> val ra = a(*,::) - meanrow.t
+ra: breeze.linalg.DenseMatrix[Double] =
+0.07200000000000001    0.013999999999999999   ... (5 total)
+0.011999999999999997   0.064                  ...
+-0.027999999999999997  -0.025999999999999995  ...
+0.0020000000000000018  -0.006000000000000005  ...
+-0.058                 -0.046                 ...
+
+scala> norm((ca - ra.t).DenseVector)
+<console>:28: error: value DenseVector is not a member of breeze.linalg.DenseMatrix[Double]
+       norm((ca - ra.t).DenseVector)
+                        ^
+
+scala> norm((ca - ra.t).toDenseVector)
+res30: Double = 0.0
+
+scala> a
+res31: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07  0.1   0.04
+0.11  0.16  0.07  0.09  0.05
+0.07  0.07  0.09  0.07  0.03
+0.1   0.09  0.07  0.16  0.03
+0.04  0.05  0.03  0.03  0.06
+
+scala> a(*,::)/10
+<console>:27: error: could not find implicit value for parameter op: breeze.linalg.operators.OpDiv.Impl2[breeze.linalg.BroadcastedRows[breeze.linalg.DenseMatrix[Double],breeze.linalg.DenseVector[Double]],Int,That]
+       a(*,::)/10
+              ^
+
+scala> a(*,::)/DenseVector(1.0, 2.0, 3.0, 4.0, 5.0)
+res33: breeze.linalg.DenseMatrix[Double] =
+0.17  0.055  0.023333333333333334  0.025   0.008
+0.11  0.08   0.023333333333333334  0.0225  0.01
+0.07  0.035  0.03                  0.0175  0.006
+0.1   0.045  0.023333333333333334  0.04    0.006
+0.04  0.025  0.01                  0.0075  0.012
+
+scala> a(*,::)*DenseVector(1.0, 2.0, 3.0, 4.0, 5.0)
+res34: breeze.linalg.DenseMatrix[Double] =
+0.17  0.22  0.21000000000000002  0.4   0.2
+0.11  0.32  0.21000000000000002  0.36  0.25
+0.07  0.14  0.27                 0.28  0.15
+0.1   0.18  0.21000000000000002  0.64  0.15
+0.04  0.1   0.09                 0.12  0.3
+
+scala> val a = DenseVector(1,2,3)
+a: breeze.linalg.DenseVector[Int] = DenseVector(1, 2, 3)
+
+scala> a(0)
+java.lang.AssertionError: assertion failed: 
+  List(method apply$mcI$sp, method apply$mcI$sp)
+     while compiling: <console>
+        during phase: globalPhase=specialize, enteringPhase=explicitouter
+     library version: version 2.12.15
+    compiler version: version 2.12.15
+  reconstructed args: -classpath  -Yrepl-class-based -Yrepl-outdir /private/var/folders/r6/b_hvy0xn1h530sj8p6hrn9lw0000gn/T/spark-4301125e-245b-4266-bd22-9f60c29410aa/repl-fb893f8e-bf03-43e0-8b22-ef0547a9a9a7
+
+  last tree to typer: Select(Ident($line64), $read)
+       tree position: line 52 of <console>
+            tree tpe: type
+              symbol: object $read in package $line64
+   symbol definition: object $read (a ModuleSymbol)
+      symbol package: $line64
+       symbol owners: object $read
+           call site: class $iw in package $line64
+
+== Source file context for tree position ==
+
+    49 val $iw = new $iw
+    50 
+    51 }
+    52 object $read {
+    53    val INSTANCE = new $read();
+    54 }
+    55 
+	at scala.reflect.internal.SymbolTable.throwAssertionError(SymbolTable.scala:185)
+	at scala.reflect.internal.Symbols$Symbol.suchThat(Symbols.scala:2009)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.matchingSymbolInPrefix$1(SpecializeTypes.scala:1572)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transformSelect$1(SpecializeTypes.scala:1595)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1690)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.internal.Trees.itransform(Trees.scala:1411)
+	at scala.reflect.internal.Trees.itransform$(Trees.scala:1400)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.api.Trees$Transformer.transform(Trees.scala:2563)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.transform(TypingTransformers.scala:57)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1819)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.internal.Trees.$anonfun$itransform$1(Trees.scala:1421)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:38)
+	at scala.reflect.internal.Trees.itransform(Trees.scala:1420)
+	at scala.reflect.internal.Trees.itransform$(Trees.scala:1400)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.api.Trees$Transformer.transform(Trees.scala:2563)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.transform(TypingTransformers.scala:57)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1819)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.$anonfun$transformTrees$1(Trees.scala:2567)
+	at scala.reflect.api.Trees$Transformer.transformTrees(Trees.scala:2567)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.$anonfun$transform$25(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transformTemplate$1(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1715)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.transformTemplate(Trees.scala:2571)
+	at scala.reflect.internal.Trees.$anonfun$itransform$4(Trees.scala:1472)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:38)
+	at scala.reflect.internal.Trees.itransform(Trees.scala:1471)
+	at scala.reflect.internal.Trees.itransform$(Trees.scala:1400)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.api.Trees$Transformer.transform(Trees.scala:2563)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.transform(TypingTransformers.scala:57)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1819)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.$anonfun$transformTrees$1(Trees.scala:2567)
+	at scala.reflect.api.Trees$Transformer.transformTrees(Trees.scala:2567)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.$anonfun$transform$25(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transformTemplate$1(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1715)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.transformTemplate(Trees.scala:2571)
+	at scala.reflect.internal.Trees.$anonfun$itransform$4(Trees.scala:1472)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:38)
+	at scala.reflect.internal.Trees.itransform(Trees.scala:1471)
+	at scala.reflect.internal.Trees.itransform$(Trees.scala:1400)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.api.Trees$Transformer.transform(Trees.scala:2563)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.transform(TypingTransformers.scala:57)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1819)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.$anonfun$transformTrees$1(Trees.scala:2567)
+	at scala.reflect.api.Trees$Transformer.transformTrees(Trees.scala:2567)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.$anonfun$transform$25(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transformTemplate$1(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1715)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.transformTemplate(Trees.scala:2571)
+	at scala.reflect.internal.Trees.$anonfun$itransform$4(Trees.scala:1472)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:38)
+	at scala.reflect.internal.Trees.itransform(Trees.scala:1471)
+	at scala.reflect.internal.Trees.itransform$(Trees.scala:1400)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.api.Trees$Transformer.transform(Trees.scala:2563)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.transform(TypingTransformers.scala:57)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1819)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.$anonfun$transformTrees$1(Trees.scala:2567)
+	at scala.reflect.api.Trees$Transformer.transformTrees(Trees.scala:2567)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.$anonfun$transform$25(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transformTemplate$1(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1715)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.transformTemplate(Trees.scala:2571)
+	at scala.reflect.internal.Trees.$anonfun$itransform$4(Trees.scala:1472)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:38)
+	at scala.reflect.internal.Trees.itransform(Trees.scala:1471)
+	at scala.reflect.internal.Trees.itransform$(Trees.scala:1400)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.api.Trees$Transformer.transform(Trees.scala:2563)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.transform(TypingTransformers.scala:57)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1819)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.$anonfun$transformTrees$1(Trees.scala:2567)
+	at scala.reflect.api.Trees$Transformer.transformTrees(Trees.scala:2567)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.$anonfun$transform$25(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transformTemplate$1(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1715)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.transformTemplate(Trees.scala:2571)
+	at scala.reflect.internal.Trees.$anonfun$itransform$4(Trees.scala:1472)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:38)
+	at scala.reflect.internal.Trees.itransform(Trees.scala:1471)
+	at scala.reflect.internal.Trees.itransform$(Trees.scala:1400)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.api.Trees$Transformer.transform(Trees.scala:2563)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.transform(TypingTransformers.scala:57)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1819)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.$anonfun$transformTrees$1(Trees.scala:2567)
+	at scala.reflect.api.Trees$Transformer.transformTrees(Trees.scala:2567)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.$anonfun$transform$25(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transformTemplate$1(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1715)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.transformTemplate(Trees.scala:2571)
+	at scala.reflect.internal.Trees.$anonfun$itransform$4(Trees.scala:1472)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:38)
+	at scala.reflect.internal.Trees.itransform(Trees.scala:1471)
+	at scala.reflect.internal.Trees.itransform$(Trees.scala:1400)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.api.Trees$Transformer.transform(Trees.scala:2563)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.transform(TypingTransformers.scala:57)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1819)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.$anonfun$transformTrees$1(Trees.scala:2567)
+	at scala.reflect.api.Trees$Transformer.transformTrees(Trees.scala:2567)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.$anonfun$transform$25(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transformTemplate$1(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1715)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.transformTemplate(Trees.scala:2571)
+	at scala.reflect.internal.Trees.$anonfun$itransform$4(Trees.scala:1472)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:38)
+	at scala.reflect.internal.Trees.itransform(Trees.scala:1471)
+	at scala.reflect.internal.Trees.itransform$(Trees.scala:1400)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.api.Trees$Transformer.transform(Trees.scala:2563)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.transform(TypingTransformers.scala:57)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1819)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.$anonfun$transformTrees$1(Trees.scala:2567)
+	at scala.reflect.api.Trees$Transformer.transformTrees(Trees.scala:2567)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.$anonfun$transform$25(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transformTemplate$1(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1715)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.transformTemplate(Trees.scala:2571)
+	at scala.reflect.internal.Trees.$anonfun$itransform$4(Trees.scala:1472)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:38)
+	at scala.reflect.internal.Trees.itransform(Trees.scala:1471)
+	at scala.reflect.internal.Trees.itransform$(Trees.scala:1400)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.api.Trees$Transformer.transform(Trees.scala:2563)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.transform(TypingTransformers.scala:57)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1819)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.$anonfun$transformTrees$1(Trees.scala:2567)
+	at scala.reflect.api.Trees$Transformer.transformTrees(Trees.scala:2567)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.$anonfun$transform$25(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transformTemplate$1(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1715)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.transformTemplate(Trees.scala:2571)
+	at scala.reflect.internal.Trees.$anonfun$itransform$4(Trees.scala:1472)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:38)
+	at scala.reflect.internal.Trees.itransform(Trees.scala:1471)
+	at scala.reflect.internal.Trees.itransform$(Trees.scala:1400)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.api.Trees$Transformer.transform(Trees.scala:2563)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.transform(TypingTransformers.scala:57)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1819)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.$anonfun$transformTrees$1(Trees.scala:2567)
+	at scala.reflect.api.Trees$Transformer.transformTrees(Trees.scala:2567)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.$anonfun$transform$25(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transformTemplate$1(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1715)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.transformTemplate(Trees.scala:2571)
+	at scala.reflect.internal.Trees.$anonfun$itransform$4(Trees.scala:1472)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:38)
+	at scala.reflect.internal.Trees.itransform(Trees.scala:1471)
+	at scala.reflect.internal.Trees.itransform$(Trees.scala:1400)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.api.Trees$Transformer.transform(Trees.scala:2563)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.transform(TypingTransformers.scala:57)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1819)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.$anonfun$transformTrees$1(Trees.scala:2567)
+	at scala.reflect.api.Trees$Transformer.transformTrees(Trees.scala:2567)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.$anonfun$transform$25(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transformTemplate$1(SpecializeTypes.scala:1713)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1715)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.transformTemplate(Trees.scala:2571)
+	at scala.reflect.internal.Trees.$anonfun$itransform$4(Trees.scala:1472)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:38)
+	at scala.reflect.internal.Trees.itransform(Trees.scala:1471)
+	at scala.reflect.internal.Trees.itransform$(Trees.scala:1400)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.internal.SymbolTable.itransform(SymbolTable.scala:28)
+	at scala.reflect.api.Trees$Transformer.transform(Trees.scala:2563)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.transform(TypingTransformers.scala:57)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1819)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.reflect.api.Trees$Transformer.$anonfun$transformStats$1(Trees.scala:2597)
+	at scala.reflect.api.Trees$Transformer.transformStats(Trees.scala:2595)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.$anonfun$transform$21(SpecializeTypes.scala:1696)
+	at scala.tools.nsc.transform.TypingTransformers$TypingTransformer.atOwner(TypingTransformers.scala:43)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1694)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transform(SpecializeTypes.scala:1483)
+	at scala.tools.nsc.ast.Trees$Transformer.transformUnit(Trees.scala:147)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.super$transformUnit(SpecializeTypes.scala:1488)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.$anonfun$transformUnit$1(SpecializeTypes.scala:1488)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationTransformer.transformUnit(SpecializeTypes.scala:1488)
+	at scala.tools.nsc.transform.Transform$Phase.apply(Transform.scala:37)
+	at scala.tools.nsc.Global$GlobalPhase.applyPhase(Global.scala:453)
+	at scala.tools.nsc.Global$GlobalPhase.run(Global.scala:400)
+	at scala.tools.nsc.transform.SpecializeTypes$SpecializationPhase.run(SpecializeTypes.scala:209)
+	at scala.tools.nsc.Global$Run.compileUnitsInternal(Global.scala:1514)
+	at scala.tools.nsc.Global$Run.compileUnits(Global.scala:1498)
+	at scala.tools.nsc.Global$Run.compileSources(Global.scala:1491)
+	at scala.tools.nsc.interpreter.IMain.compileSourcesKeepingRun(IMain.scala:434)
+	at scala.tools.nsc.interpreter.IMain$ReadEvalPrint.compileAndSaveRun(IMain.scala:814)
+	at scala.tools.nsc.interpreter.IMain$ReadEvalPrint.compile(IMain.scala:772)
+	at scala.tools.nsc.interpreter.IMain$Request.compile$lzycompute(IMain.scala:972)
+	at scala.tools.nsc.interpreter.IMain$Request.compile(IMain.scala:967)
+	at scala.tools.nsc.interpreter.IMain.compile(IMain.scala:612)
+	at scala.tools.nsc.interpreter.IMain.interpret(IMain.scala:592)
+	at scala.tools.nsc.interpreter.IMain.interpret(IMain.scala:564)
+	at scala.tools.nsc.interpreter.ILoop.interpretStartingWith(ILoop.scala:865)
+	at scala.tools.nsc.interpreter.ILoop.command(ILoop.scala:733)
+	at scala.tools.nsc.interpreter.ILoop.processLine(ILoop.scala:435)
+	at scala.tools.nsc.interpreter.ILoop.loop(ILoop.scala:456)
+	at org.apache.spark.repl.SparkILoop.process(SparkILoop.scala:239)
+	at org.apache.spark.repl.Main$.doMain(Main.scala:78)
+	at org.apache.spark.repl.Main$.main(Main.scala:58)
+	at org.apache.spark.repl.Main.main(Main.scala)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:577)
+	at org.apache.spark.deploy.JavaMainApplication.start(SparkApplication.scala:52)
+	at org.apache.spark.deploy.SparkSubmit.org$apache$spark$deploy$SparkSubmit$$runMain(SparkSubmit.scala:958)
+	at org.apache.spark.deploy.SparkSubmit.doRunMain$1(SparkSubmit.scala:180)
+	at org.apache.spark.deploy.SparkSubmit.submit(SparkSubmit.scala:203)
+	at org.apache.spark.deploy.SparkSubmit.doSubmit(SparkSubmit.scala:90)
+	at org.apache.spark.deploy.SparkSubmit$$anon$2.doSubmit(SparkSubmit.scala:1046)
+	at org.apache.spark.deploy.SparkSubmit$.main(SparkSubmit.scala:1055)
+	at org.apache.spark.deploy.SparkSubmit.main(SparkSubmit.scala)
+
+That entry seems to have slain the compiler.  Shall I replay
+your session? I can re-run each line except the last one.
+[y/n]Spark context Web UI available at http://10.4.200.43:4040
+Spark context available as 'sc' (master = local[*], app id = local-1665484894555).
+Spark session available as 'spark'.
+Replaying: import breeze.linalg._
+import breeze.linalg._
+
+Replaying: val a=DenseMatrix((0.17,0.11,0.07,0.10,0.04),(0.11,0.16,0.07,0.09,0.05),(0.07,0.07,0.09,0.07,0.03),(0.10,0.09,0.07,0.16,0.03),(0.04,0.05,0.03,0.03,0.06))
+a: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07  0.1   0.04
+0.11  0.16  0.07  0.09  0.05
+0.07  0.07  0.09  0.07  0.03
+0.1   0.09  0.07  0.16  0.03
+0.04  0.05  0.03  0.03  0.06
+
+Replaying: eig(a)
+res36: breeze.linalg.eig.DenseEig =
+Eig(DenseVector(0.4253939960429207, 0.07635956684332165, 0.05809247061780503, 0.03675280160898894, 0.04340116488696337),DenseVector(0.0, 0.0, 0.0, 0.0, 0.0),-0.5520216214925445   -0.13525037844191246  -0.8100649503825562  ... (5 total)
+-0.5293341343878225   -0.5079438950590737   0.34124724469453555  ...
+-0.3486780745241735   0.06424689506354715   0.29271439723550113  ...
+-0.5023922052405363   0.7767687401071603    0.19828514347508833  ...
+-0.20273918229168844  -0.34088560466902146  0.31991620415073585  ...)
+
+Replaying: eig(a).eigenvalues
+res37: breeze.linalg.DenseVector[Double] = DenseVector(0.4253939960429207, 0.07635956684332165, 0.05809247061780503, 0.03675280160898894, 0.04340116488696337)
+
+Replaying: eig(a).eigenvectors
+res38: breeze.linalg.DenseMatrix[Double] =
+-0.5520216214925445   -0.13525037844191246  -0.8100649503825562  ... (5 total)
+-0.5293341343878225   -0.5079438950590737   0.34124724469453555  ...
+-0.3486780745241735   0.06424689506354715   0.29271439723550113  ...
+-0.5023922052405363   0.7767687401071603    0.19828514347508833  ...
+-0.20273918229168844  -0.34088560466902146  0.31991620415073585  ...
+
+Replaying: val V = eig(a).eigenvectors
+V: breeze.linalg.DenseMatrix[Double] =
+-0.5520216214925445   -0.13525037844191246  -0.8100649503825562  ... (5 total)
+-0.5293341343878225   -0.5079438950590737   0.34124724469453555  ...
+-0.3486780745241735   0.06424689506354715   0.29271439723550113  ...
+-0.5023922052405363   0.7767687401071603    0.19828514347508833  ...
+-0.20273918229168844  -0.34088560466902146  0.31991620415073585  ...
+
+Replaying: V*V.t
+res39: breeze.linalg.DenseMatrix[Double] =
+0.9999999999999991      2.7755575615628914E-16   ... (5 total)
+2.7755575615628914E-16  1.000000000000001        ...
+-9.71445146547012E-17   1.6653345369377348E-16   ...
+2.498001805406602E-16   -2.0816681711721685E-16  ...
+-6.869504964868156E-16  -1.1657341758564144E-15  ...
+
+Replaying: diag(V*V.t)
+res40: breeze.linalg.DenseVector[Double] = DenseVector(0.9999999999999991, 1.000000000000001, 0.999999999999998, 0.9999999999999992, 1.0000000000000022)
+
+Replaying: val W = eig(a).eigenvalues
+W: breeze.linalg.DenseVector[Double] = DenseVector(0.4253939960429207, 0.07635956684332165, 0.05809247061780503, 0.03675280160898894, 0.04340116488696337)
+
+Replaying: a - V*diag(W)*V.t
+res41: breeze.linalg.DenseMatrix[Double] =
+1.942890293094024E-16   4.163336342344337E-17   ... (5 total)
+4.163336342344337E-17   0.0                     ...
+2.7755575615628914E-17  0.0                     ...
+1.1102230246251565E-16  5.551115123125783E-17   ...
+3.469446951953614E-17   2.7755575615628914E-17  ...
+
+Replaying: val error = a - V*diag(W)*V.t
+error: breeze.linalg.DenseMatrix[Double] =
+1.942890293094024E-16   4.163336342344337E-17   ... (5 total)
+4.163336342344337E-17   0.0                     ...
+2.7755575615628914E-17  0.0                     ...
+1.1102230246251565E-16  5.551115123125783E-17   ...
+3.469446951953614E-17   2.7755575615628914E-17  ...
+
+Replaying: error.toDenseVector
+res42: breeze.linalg.DenseVector[Double] = DenseVector(1.942890293094024E-16, 4.163336342344337E-17, 2.7755575615628914E-17, 1.1102230246251565E-16, 3.469446951953614E-17, 4.163336342344337E-17, 0.0, 0.0, 5.551115123125783E-17, 2.7755575615628914E-17, 2.7755575615628914E-17, -2.7755575615628914E-17, 8.326672684688674E-17, -2.7755575615628914E-17, -8.326672684688674E-17, 1.1102230246251565E-16, 5.551115123125783E-17, -1.3877787807814457E-17, 1.1102230246251565E-16, 1.734723475976807E-17, 3.469446951953614E-17, 2.7755575615628914E-17, -8.326672684688674E-17, 1.734723475976807E-17, -1.249000902703301E-16)
+
+Replaying: norm(error.toDenseVector)
+res43: Double = 3.5858039253722845E-16
+
+Replaying: val svd.SVD(u, d, v) = svd(a)
+u: breeze.linalg.DenseMatrix[Double] =
+-0.5520216214925445   0.13525037844191135   -0.8100649503825571  ... (5 total)
+-0.5293341343878223   0.5079438950590747    0.341247244694535    ...
+-0.34867807452417326  -0.06424689506354699  0.29271439723550186  ...
+-0.5023922052405363   -0.7767687401071605   0.19828514347508963  ...
+-0.2027391822916883   0.34088560466902157   0.3199162041507342   ...
+d: breeze.linalg.DenseVector[Double] = DenseVector(0.42539399604292116, 0.07635956684332162, 0.058092470617805064, 0.04340116488696339, 0.03675280160898894)
+v: breeze.linalg.DenseMatrix[Double] =
+-0.5520216214925446  -0.5293341343878225   -0.3486780745241733   ... (5 total)
+0.13525037844191123  0.5079438950590746    -0.0642...
+
+Replaying: norm((u - v.t).toDenseVector)
+res44: Double = 2.4148945880937642E-15
+
+Replaying: a
+res45: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07  0.1   0.04
+0.11  0.16  0.07  0.09  0.05
+0.07  0.07  0.09  0.07  0.03
+0.1   0.09  0.07  0.16  0.03
+0.04  0.05  0.03  0.03  0.06
+
+Replaying: a(::,0 to 2)
+res46: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07
+0.11  0.16  0.07
+0.07  0.07  0.09
+0.1   0.09  0.07
+0.04  0.05  0.03
+
+Replaying: val b = a(::,0 to 2)
+b: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07
+0.11  0.16  0.07
+0.07  0.07  0.09
+0.1   0.09  0.07
+0.04  0.05  0.03
+
+Replaying: val svd.SVD(u, d, v) = svd(b)
+u: breeze.linalg.DenseMatrix[Double] =
+-0.5847262587563399   -0.7382281133635373   0.19487889487021706   ... (5 total)
+-0.5628568936204275   0.6277735843788151    0.4680712643942523    ...
+-0.3542214853702293   0.19094969166815096   -0.8394758650702095   ...
+-0.42142651654118635  -0.04424618459401045  -0.19515527057586574  ...
+-0.1954843985663476   0.15000023265514775   0.011233882392693618  ...
+d: breeze.linalg.DenseVector[Double] = DenseVector(0.35914100293769985, 0.05608150264978233, 0.04767184776621826)
+v: breeze.linalg.DenseMatrix[Double] =
+-0.6573330584045433  -0.631715955515004  -0.4109114282619732
+-0.7400268139341191  0.6441163799099541  0.19358306689948956
+0.14238526955779499  0.4313340244861992  -0.8...
+
+Replaying: diag(d)
+res47: breeze.linalg.DenseMatrix[Double] =
+0.35914100293769985  0.0                  0.0
+0.0                  0.05608150264978233  0.0
+0.0                  0.0                  0.04767184776621826
+
+Replaying: DenseMatrix.zeros[Double](2,3)
+res48: breeze.linalg.DenseMatrix[Double] =
+0.0  0.0  0.0
+0.0  0.0  0.0
+
+Replaying: DenseMatrix.vertcat(diag(d), DenseMatrix.zeros[Double](2,3))
+res49: breeze.linalg.DenseMatrix[Double] =
+0.35914100293769985  0.0                  0.0
+0.0                  0.05608150264978233  0.0
+0.0                  0.0                  0.04767184776621826
+0.0                  0.0                  0.0
+0.0                  0.0                  0.0
+
+Replaying: val D = DenseMatrix.vertcat(diag(d), DenseMatrix.zeros[Double](2,3))
+D: breeze.linalg.DenseMatrix[Double] =
+0.35914100293769985  0.0                  0.0
+0.0                  0.05608150264978233  0.0
+0.0                  0.0                  0.04767184776621826
+0.0                  0.0                  0.0
+0.0                  0.0                  0.0
+
+Replaying: b
+res50: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07
+0.11  0.16  0.07
+0.07  0.07  0.09
+0.1   0.09  0.07
+0.04  0.05  0.03
+
+Replaying: norm((b - u*D*v).toDenseVector)
+res51: Double = 6.691626947686432E-17
+
+Replaying: rank(a)
+res52: Int = 5
+
+Replaying: rank(b)
+res53: Int = 3
+
+Replaying: b
+res54: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07
+0.11  0.16  0.07
+0.07  0.07  0.09
+0.1   0.09  0.07
+0.04  0.05  0.03
+
+Replaying: a
+res55: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07  0.1   0.04
+0.11  0.16  0.07  0.09  0.05
+0.07  0.07  0.09  0.07  0.03
+0.1   0.09  0.07  0.16  0.03
+0.04  0.05  0.03  0.03  0.06
+
+Replaying: sum(a(*,::))
+res56: breeze.linalg.DenseVector[Double] = DenseVector(0.49000000000000005, 0.48000000000000004, 0.33000000000000007, 0.45000000000000007, 0.21)
+
+Replaying: sum(a(::,*))
+res57: breeze.linalg.Transpose[breeze.linalg.DenseVector[Double]] = Transpose(DenseVector(0.49000000000000005, 0.48000000000000004, 0.33000000000000007, 0.45000000000000007, 0.21))
+
+Replaying: b
+res58: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07
+0.11  0.16  0.07
+0.07  0.07  0.09
+0.1   0.09  0.07
+0.04  0.05  0.03
+
+Replaying: b.rows
+res59: Int = 5
+
+Replaying: b.cols
+res60: Int = 3
+
+Replaying: val meancol = sum(a(*,::))/a.cols.toDouble
+meancol: breeze.linalg.DenseVector[Double] = DenseVector(0.098, 0.096, 0.06600000000000002, 0.09000000000000001, 0.041999999999999996)
+
+Replaying: a(::,*) - meancol
+res61: breeze.linalg.DenseMatrix[Double] =
+0.07200000000000001    0.011999999999999997     ... (5 total)
+0.013999999999999999   0.064                    ...
+0.00399999999999999    0.00399999999999999      ...
+0.009999999999999995   -1.3877787807814457E-17  ...
+-0.001999999999999995  0.008000000000000007     ...
+
+Replaying: val ca = a(::,*) - meancol
+ca: breeze.linalg.DenseMatrix[Double] =
+0.07200000000000001    0.011999999999999997     ... (5 total)
+0.013999999999999999   0.064                    ...
+0.00399999999999999    0.00399999999999999      ...
+0.009999999999999995   -1.3877787807814457E-17  ...
+-0.001999999999999995  0.008000000000000007     ...
+
+Replaying: val meanrow = sum(a(::,*))/a.rows.toDouble
+meanrow: breeze.linalg.Transpose[breeze.linalg.DenseVector[Double]] = Transpose(DenseVector(0.098, 0.096, 0.06600000000000002, 0.09000000000000001, 0.041999999999999996))
+
+Replaying: a(*,::) - meanrow.t
+res62: breeze.linalg.DenseMatrix[Double] =
+0.07200000000000001    0.013999999999999999   ... (5 total)
+0.011999999999999997   0.064                  ...
+-0.027999999999999997  -0.025999999999999995  ...
+0.0020000000000000018  -0.006000000000000005  ...
+-0.058                 -0.046                 ...
+
+Replaying: val ra = a(*,::) - meanrow.t
+ra: breeze.linalg.DenseMatrix[Double] =
+0.07200000000000001    0.013999999999999999   ... (5 total)
+0.011999999999999997   0.064                  ...
+-0.027999999999999997  -0.025999999999999995  ...
+0.0020000000000000018  -0.006000000000000005  ...
+-0.058                 -0.046                 ...
+
+Replaying: norm((ca - ra.t).toDenseVector)
+res63: Double = 0.0
+
+Replaying: a
+res64: breeze.linalg.DenseMatrix[Double] =
+0.17  0.11  0.07  0.1   0.04
+0.11  0.16  0.07  0.09  0.05
+0.07  0.07  0.09  0.07  0.03
+0.1   0.09  0.07  0.16  0.03
+0.04  0.05  0.03  0.03  0.06
+
+Replaying: a(*,::)/DenseVector(1.0, 2.0, 3.0, 4.0, 5.0)
+res65: breeze.linalg.DenseMatrix[Double] =
+0.17  0.055  0.023333333333333334  0.025   0.008
+0.11  0.08   0.023333333333333334  0.0225  0.01
+0.07  0.035  0.03                  0.0175  0.006
+0.1   0.045  0.023333333333333334  0.04    0.006
+0.04  0.025  0.01                  0.0075  0.012
+
+Replaying: a(*,::)*DenseVector(1.0, 2.0, 3.0, 4.0, 5.0)
+res66: breeze.linalg.DenseMatrix[Double] =
+0.17  0.22  0.21000000000000002  0.4   0.2
+0.11  0.32  0.21000000000000002  0.36  0.25
+0.07  0.14  0.27                 0.28  0.15
+0.1   0.18  0.21000000000000002  0.64  0.15
+0.04  0.1   0.09                 0.12  0.3
+
+Replaying: val a = DenseVector(1,2,3)
+a: breeze.linalg.DenseVector[Int] = DenseVector(1, 2, 3)
+
+
+scala> val a = DenseVector(1.0,2.0,3.0)
+a: breeze.linalg.DenseVector[Double] = DenseVector(1.0, 2.0, 3.0)
+
+scala> a(0)
+res67: Double = 1.0
+
+scala> def test(a: Int):Int={
+     | a = a+1;
+     | a;}
+<console>:41: error: reassignment to val
+       a = a+1;
+         ^
+
+scala> def test(a: DenseVector[Int]):Int={
+     | a(0)=a(1);
+     | a(0)}
+test: (a: breeze.linalg.DenseVector[Int])Int
+
+scala> test(DenseVector(1,2,3))
+res68: Int = 2
+
+scala> val x = DenseVector(1,2,3)
+x: breeze.linalg.DenseVector[Int] = DenseVector(1, 2, 3)
+
+scala> test(x)
+res69: Int = 2
+
+scala> x
+res70: breeze.linalg.DenseVector[Int] = DenseVector(2, 2, 3)
+
+scala> val X = DenseVector(1,2,3,4,5,6,7,8,9)
+X: breeze.linalg.DenseVector[Int] = DenseVector(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> 
+
+scala> def f1(X: DenseVector[Int]): DenseVector[Int]={
+     | X = X(0 to 2)
+     | X} 
+<console>:41: error: reassignment to val
+       X = X(0 to 2)
+         ^
+
+scala> def f1(X: DenseVector[Int]): DenseVector[Int]={
+     | X(0 to 2) := 3
+     | X} 
+f1: (X: breeze.linalg.DenseVector[Int])breeze.linalg.DenseVector[Int]
+
+scala> f1(DenseVector(1,2,3,4,5))
+res71: breeze.linalg.DenseVector[Int] = DenseVector(3, 3, 3, 4, 5)
+
+scala> val x = DenseVector(1,2,3,4,5)
+x: breeze.linalg.DenseVector[Int] = DenseVector(1, 2, 3, 4, 5)
+
+scala> f1(x)
+res72: breeze.linalg.DenseVector[Int] = DenseVector(3, 3, 3, 4, 5)
+
+scala> x
+res73: breeze.linalg.DenseVector[Int] = DenseVector(3, 3, 3, 4, 5)
+
+scala> import breeze.numerics._
+import breeze.numerics._
+
+scala> val tmpVec = DenseVector(0.0, 1.1, 2.2, 3.3)
+tmpVec: breeze.linalg.DenseVector[Double] = DenseVector(0.0, 1.1, 2.2, 3.3)
+
+scala> exp(tmpVec)
+res74: breeze.linalg.DenseVector[Double] = DenseVector(1.0, 3.0041660239464334, 9.025013499434122, 27.112638920657883)
+
+scala> sqrt(tmpVec)
+res75: breeze.linalg.DenseVector[Double] = DenseVector(0.0, 1.0488088481701516, 1.4832396974191326, 1.816590212458495)
+
+scala> pow(tmpVec,0.3)
+res76: breeze.linalg.DenseVector[Double] = DenseVector(0.0, 1.029005759421095, 1.2668546920110242, 1.4307184640917885)
+
+scala> import breeze.stats.distributions._
+import breeze.stats.distributions._
+
+scala> val MyPoisson = new Poisson(2.0)
+MyPoisson: breeze.stats.distributions.Poisson = Poisson(2.0)
+
+scala> val RandNumbers = MyPoisson.sample(100)
+RandNumbers: IndexedSeq[Int] = Vector(2, 1, 1, 0, 2, 4, 2, 2, 2, 7, 2, 3, 4, 2, 3, 3, 2, 1, 1, 0, 2, 1, 4, 1, 2, 2, 2, 3, 2, 1, 2, 0, 2, 0, 2, 4, 3, 2, 1, 1, 2, 3, 3, 5, 2, 2, 0, 1, 1, 1, 0, 4, 3, 3, 3, 5, 3, 2, 0, 3, 1, 2, 3, 1, 3, 3, 1, 3, 3, 4, 3, 4, 3, 5, 1, 4, 0, 2, 3, 3, 1, 2, 1, 2, 1, 5, 3, 2, 1, 0, 2, 3, 2, 1, 0, 2, 2, 1, 1, 2)
+
+scala> RandNumbers
+res77: IndexedSeq[Int] = Vector(2, 1, 1, 0, 2, 4, 2, 2, 2, 7, 2, 3, 4, 2, 3, 3, 2, 1, 1, 0, 2, 1, 4, 1, 2, 2, 2, 3, 2, 1, 2, 0, 2, 0, 2, 4, 3, 2, 1, 1, 2, 3, 3, 5, 2, 2, 0, 1, 1, 1, 0, 4, 3, 3, 3, 5, 3, 2, 0, 3, 1, 2, 3, 1, 3, 3, 1, 3, 3, 4, 3, 4, 3, 5, 1, 4, 0, 2, 3, 3, 1, 2, 1, 2, 1, 5, 3, 2, 1, 0, 2, 3, 2, 1, 0, 2, 2, 1, 1, 2)
+
+scala> RandNumbers.size
+res78: Int = 100
+
+scala> sum(RandNumbers)
+res79: Int = 213
+
+scala> sum(RandNumbers)/RandNumbers.size
+res80: Int = 2
+
+scala> sum(RandNumbers).toDouble/RandNumbers.size.toDouble
+res81: Double = 2.13
+
+scala> val RandNumbers = MyPoisson.sample(10000)
+RandNumbers: IndexedSeq[Int] = Vector(1, 5, 5, 2, 1, 2, 0, 2, 4, 2, 2, 2, 2, 3, 1, 1, 2, 1, 4, 0, 3, 2, 2, 1, 1, 2, 7, 2, 1, 1, 4, 3, 1, 3, 0, 2, 2, 0, 2, 1, 2, 1, 1, 3, 3, 1, 2, 1, 4, 3, 2, 2, 2, 5, 3, 0, 3, 2, 2, 3, 1, 1, 3, 1, 0, 1, 2, 0, 3, 2, 1, 5, 2, 1, 0, 1, 2, 0, 2, 2, 2, 1, 0, 1, 0, 2, 3, 0, 4, 0, 6, 1, 4, 2, 5, 1, 0, 1, 1, 3, 2, 1, 2, 1, 0, 1, 2, 3, 1, 0, 3, 0, 1, 4, 0, 2, 3, 1, 1, 0, 1, 1, 4, 1, 2, 3, 4, 1, 3, 6, 2, 1, 0, 2, 1, 2, 2, 2, 1, 2, 1, 3, 1, 1, 3, 1, 1, 1, 2, 1, 3, 1, 1, 2, 2, 3, 1, 2, 1, 2, 1, 1, 5, 0, 2, 1, 0, 4, 0, 2, 1, 0, 4, 0, 1, 2, 1, 2, 0, 4, 4, 1, 2, 1, 2, 3, 2, 4, 2, 3, 3, 3, 1, 2, 3, 3, 2, 2, 3, 0, 2, 4, 2, 5, 4, 3, 2, 3, 0, 2, 2, 3, 1, 2, 5, 1, 3, 3, 3, 2, 3, 1, 0, 1, 5, 0, 2, 1, 3, 3, 1, 3, 1, 3, 4, 3, 5, 0, 4, 1, 2, 2, 2, 2, 3...
+
+scala> sum(RandNumbers).toDouble/RandNumbers.size.toDouble
+res82: Double = 2.0213
+
+scala> val RandNumbers = MyPoisson.sample(10)
+RandNumbers: IndexedSeq[Int] = Vector(5, 0, 1, 2, 2, 3, 3, 4, 0, 1)
+
+scala> RandNumbers.map(i => MyPossion.probability)
+<console>:47: error: not found: value MyPossion
+       RandNumbers.map(i => MyPossion.probability)
+                            ^
+
+scala> 
+
+scala> 
+
+scala> 
+
+scala> 
+
+scala> 
+
+scala> 
+
+scala> RandNumbers.map(i => MyPossion.probabilityOf(i))
+<console>:47: error: not found: value MyPossion
+       RandNumbers.map(i => MyPossion.probabilityOf(i))
+                            ^
+
+scala> RandNumbers.map(i => MyPoisson.probability)
+<console>:48: error: value probability is not a member of breeze.stats.distributions.Poisson
+       RandNumbers.map(i => MyPoisson.probability)
+                                      ^
+
+scala> RandNumbers.map(i => MyPoisson.probabilityOf(i))
+res86: IndexedSeq[Double] = Vector(0.03608940886309672, 0.1353352832366127, 0.2706705664732254, 0.2706705664732254, 0.2706705664732254, 0.18044704431548356, 0.18044704431548356, 0.09022352215774178, 0.1353352832366127, 0.2706705664732254)
+
+scala> MyPoisson.probabilityOf(0)
+res87: Double = 0.1353352832366127
+
+scala> MyPoisson.probabilityOf(1)
+res88: Double = 0.2706705664732254
+
+scala> MyPoisson.probabilityOf(2)
+res89: Double = 0.2706705664732254
+
+scala> MyPoisson.cdf(2)
+res90: Double = 0.6766764161830635
+
+scala> MyPoisson.probabilityOf(0)+MyPoisson.probabilityOf(1)+MyPoisson.probabilityOf(2)
+res91: Double = 0.6766764161830635
+
+scala> RandNumbers.map(i => MyPoisson.probabilityOf(i))
+res92: IndexedSeq[Double] = Vector(0.03608940886309672, 0.1353352832366127, 0.2706705664732254, 0.2706705664732254, 0.2706705664732254, 0.18044704431548356, 0.18044704431548356, 0.09022352215774178, 0.1353352832366127, 0.2706705664732254)
+
+scala> RandNumbers map{MyPoisson.probabilityOf(_)}
+res93: IndexedSeq[Double] = Vector(0.03608940886309672, 0.1353352832366127, 0.2706705664732254, 0.2706705664732254, 0.2706705664732254, 0.18044704431548356, 0.18044704431548356, 0.09022352215774178, 0.1353352832366127, 0.2706705664732254)
+
+scala> val DoublePoisson = for(x <- MyPoisson) yield x.toDouble
+DoublePoisson: breeze.stats.distributions.Rand[Double] = MappedRand(Poisson(2.0),$Lambda$2419/0x000000080186a498@44976199)
+
+scala> DoublePoisson.sample(10)
+res94: IndexedSeq[Double] = Vector(0.0, 0.0, 4.0, 4.0, 1.0, 4.0, 2.0, 2.0, 1.0, 0.0)
+
+scala> breeze.stats.meanAndVariance(DoublePoisson.sample(10))
+res95: breeze.stats.meanAndVariance.MeanAndVariance = MeanAndVariance(1.6,2.711111111111111,10)
+
+scala> breeze.stats.meanAndVariance(DoublePoisson.sample(10000))
+res96: breeze.stats.meanAndVariance.MeanAndVariance = MeanAndVariance(2.0001000000000055,2.0143014201420164,10000)
+
+scala> MyPoisson.mean
+res97: Double = 2.0
+
+scala> MyPoisson.variance
+res98: Double = 2.0
+
+scala> val MyBeta = new Beta(1.0, 2.0)
+MyBeta: breeze.stats.distributions.Beta = Beta(1.0,2.0)
+
+scala> val RandNumbers = MyBeta.sample(10)
+RandNumbers: IndexedSeq[Double] = Vector(0.059556179359274306, 0.5322656102528448, 0.08793869160125029, 0.04110385010726796, 0.4683243915835995, 0.5222710442582241, 0.5212507053305758, 0.21592521517750823, 0.33109728574197766, 0.018159255370824183)
+
+scala> MyBeta.pdf(0.05)
+res99: Double = 1.9
+
+scala> MyBeta.pdf(RandNumbers)
+<console>:48: error: could not find implicit value for parameter impl: breeze.generic.UFunc.UImpl2[breeze.stats.distributions.Beta.type,breeze.stats.distributions.Beta.ContinuousDistrUFuncWrapper,IndexedSeq[Double],VR]
+       MyBeta.pdf(RandNumbers)
+                 ^
+
+scala> RandNumbers map{MyBeta.pdf(_)}
+res101: IndexedSeq[Double] = Vector(1.8808876412814515, 0.9354687794943103, 1.8241226167974993, 1.9177922997854642, 1.063351216832801, 0.9554579114835517, 0.9574985893388483, 1.5681495696449836, 1.3378054285160448, 1.9636814892583516)
+
+scala> RandNumbers map{MyBeta.cdf(_)}
+res102: IndexedSeq[Double] = Vector(0.11556542021867458, 0.7812245406478563, 0.16814416972196078, 0.08051817372089516, 0.7173210474150503, 0.7717750448458723, 0.7707991128535288, 0.3852267318055634, 0.5525691588582506, 0.03598875218602557)
+
+scala> MyBeta.pdf(RandNumbers.toArray)
+res103: Array[Double] = Array(1.8808876412814515, 0.9354687794943103, 1.8241226167974993, 1.9177922997854642, 1.063351216832801, 0.9554579114835517, 0.9574985893388483, 1.5681495696449836, 1.3378054285160448, 1.9636814892583516)
+
+scala> def f1(X: DenseVector[Int]): DenseVector[Int]={
+     | Val X = X(0 to 2)
+     | X} 
+<console>:47: error: not found: value Val
+       Val X = X(0 to 2)
+       ^
+
+scala> def f1(X: DenseVector[Int]): DenseVector[Int]={
+     | val X = X(0 to 2)
+     | X} 
+<console>:47: error: recursive value X needs type
+       val X = X(0 to 2)
+               ^
+
+scala> MyBeta.cdf(RandNumbers.toArray)
+<console>:48: error: polymorphic expression cannot be instantiated to expected type;
+ found   : [B >: Double]Array[B]
+ required: Double
+       MyBeta.cdf(RandNumbers.toArray)
+                              ^
+
+scala> MyBeta.pdf(RandNumbers.toArray)
+res105: Array[Double] = Array(1.8808876412814515, 0.9354687794943103, 1.8241226167974993, 1.9177922997854642, 1.063351216832801, 0.9554579114835517, 0.9574985893388483, 1.5681495696449836, 1.3378054285160448, 1.9636814892583516)
+
+scala> val MyDir = new Dirichlet(DenseVector(3.0, 2.0, 6.0))
+MyDir: breeze.stats.distributions.Dirichlet[breeze.linalg.DenseVector[Double],Int] = Dirichlet(DenseVector(3.0, 2.0, 6.0))
+
+scala> val data = MyDir.sample(10)
+data: IndexedSeq[breeze.linalg.DenseVector[Double]] = Vector(DenseVector(0.1894896327622842, 0.22451230659618962, 0.585998060641526), DenseVector(0.0629741631743058, 0.32637781512704866, 0.6106480216986455), DenseVector(0.1416731306747946, 0.3047508836613029, 0.5535759856639024), DenseVector(0.17603671008292676, 0.20226747290676292, 0.6216958170103102), DenseVector(0.29371436961775105, 0.1414495691006249, 0.5648360612816241), DenseVector(0.4601747583691002, 0.11542170386439984, 0.4244035377665), DenseVector(0.19343866193840628, 0.2343515851692131, 0.5722097528923807), DenseVector(0.33024475294469163, 0.0254975581908166, 0.6442576888644918), DenseVector(0.4914928905342543, 0.09156525246488133, 0.41694185700086434), DenseVector(0.2671135193924809, 0.1226400229454...
+
+scala> val data0 = data.tpIndexedSeq
+<console>:46: error: value tpIndexedSeq is not a member of IndexedSeq[breeze.linalg.DenseVector[Double]]
+       val data0 = data.tpIndexedSeq
+                        ^
+
+scala> val data0 = data.toIndexedSeq
+data0: scala.collection.immutable.IndexedSeq[breeze.linalg.DenseVector[Double]] = Vector(DenseVector(0.1894896327622842, 0.22451230659618962, 0.585998060641526), DenseVector(0.0629741631743058, 0.32637781512704866, 0.6106480216986455), DenseVector(0.1416731306747946, 0.3047508836613029, 0.5535759856639024), DenseVector(0.17603671008292676, 0.20226747290676292, 0.6216958170103102), DenseVector(0.29371436961775105, 0.1414495691006249, 0.5648360612816241), DenseVector(0.4601747583691002, 0.11542170386439984, 0.4244035377665), DenseVector(0.19343866193840628, 0.2343515851692131, 0.5722097528923807), DenseVector(0.33024475294469163, 0.0254975581908166, 0.6442576888644918), DenseVector(0.4914928905342543, 0.09156525246488133, 0.41694185700086434), DenseVector(0.26711...
+
+scala> val expFam = new Dirichlet.ExpFam(DenseVector.zeros[Double](3))
+expFam: breeze.stats.distributions.Dirichlet.ExpFam[breeze.linalg.DenseVector[Double],Int] = breeze.stats.distributions.Dirichlet$ExpFam@6553066d
+
+scala> val SuffStat = data.foldLeft(expFam.emptySufficientStatistic){(x,y) => x + expFam.sufficientStatisticFor(y)}
+SuffStat: expFam.SufficientStatistic = SufficientStatistic(10.0,DenseVector(-14.902149056662642, -19.124234877919406, -5.889231259300725))
+
+scala> val SuffStat = data0.foldLeft(expFam.emptySufficientStatistic){(x,y) => x + expFam.sufficientStatisticFor(y)}
+SuffStat: expFam.SufficientStatistic = SufficientStatistic(10.0,DenseVector(-14.902149056662642, -19.124234877919406, -5.889231259300725))
+
+scala> expFam.emptySufficientStatistic
+res106: expFam.SufficientStatistic = SufficientStatistic(0.0,DenseVector(0.0, 0.0, 0.0))
+
+scala> data0(1)
+res107: breeze.linalg.DenseVector[Double] = DenseVector(0.0629741631743058, 0.32637781512704866, 0.6106480216986455)
+
+scala> expFam.sufficientStatisticFor(data0(1))
+res108: expFam.SufficientStatistic = SufficientStatistic(1.0,DenseVector(-2.7650307450523828, -1.1196996265628967, -0.4932345550351599))
+
+scala> log(data0(1))
+res109: breeze.linalg.DenseVector[Double] = DenseVector(-2.7650307450523828, -1.1196996265628967, -0.4932345550351599)
+
+scala> expFam.sufficientStatisticFor(data0(0)) + expFam.sufficientStatisticFor(data0(1))
+res110: expFam.SufficientStatistic = SufficientStatistic(2.0,DenseVector(-4.428451709387044, -2.6135243820647664, -1.027673353931211))
+
+scala> List(1,2,3).foldLeft(0)((x,y) => x+y)
+res111: Int = 6
+
+scala> List(1,2,3).foldLeft(0)(f)=f(f(f(0,1),2),3)
+<console>:46: error: missing argument list for method foldLeft in trait LinearSeqOptimized
+Unapplied methods are only converted to functions when a function type is expected.
+You can make this conversion explicit by writing `foldLeft _` or `foldLeft(_)(_)` instead of `foldLeft`.
+       List(1,2,3).foldLeft(0)(f)=f(f(f(0,1),2),3)
+                           ^
+<console>:46: error: not found: value f
+       List(1,2,3).foldLeft(0)(f)=f(f(f(0,1),2),3)
+                               ^
+<console>:46: error: not found: value f
+       List(1,2,3).foldLeft(0)(f)=f(f(f(0,1),2),3)
+                                  ^
+<console>:46: error: not found: value f
+       List(1,2,3).foldLeft(0)(f)=f(f(f(0,1),2),3)
+                                    ^
+<console>:46: error: not found: value f
+       List(1,2,3).foldLeft(0)(f)=f(f(f(0,1),2),3)
+                                      ^
+
+scala> val Estimate = expFam.mle(SuffStat)
+Estimate: breeze.linalg.DenseVector[Double] = DenseVector(3.4996951602780766, 2.455009954649223, 7.915649369699244)
+
+scala> val data = MyDir.sample(10000)
+data: IndexedSeq[breeze.linalg.DenseVector[Double]] = Vector(DenseVector(0.17627886126319953, 0.49054193457581297, 0.33317920416098756), DenseVector(0.3896570777877226, 0.23584502748097927, 0.3744978947312982), DenseVector(0.2654361628545741, 0.1808231551039496, 0.5537406820414763), DenseVector(0.16610529121519005, 0.0931117660162738, 0.7407829427685361), DenseVector(0.19294157684740337, 0.12142131065381342, 0.6856371124987832), DenseVector(0.0882045303631292, 0.36481542952696133, 0.5469800401099094), DenseVector(0.2689219389046643, 0.030888880896081147, 0.7001891801992545), DenseVector(0.3986229786778934, 0.04500829862220237, 0.5563687226999042), DenseVector(0.4873659808910437, 0.11601227609192555, 0.3966217430170308), DenseVector(0.26827012905655195, 0.141748...
+
+scala> val data0 = data.tpIndexedSeq
+<console>:46: error: value tpIndexedSeq is not a member of IndexedSeq[breeze.linalg.DenseVector[Double]]
+       val data0 = data.tpIndexedSeq
+                        ^
+
+scala> val data0 = data.toIndexedSeq
+data0: scala.collection.immutable.IndexedSeq[breeze.linalg.DenseVector[Double]] = Vector(DenseVector(0.17627886126319953, 0.49054193457581297, 0.33317920416098756), DenseVector(0.3896570777877226, 0.23584502748097927, 0.3744978947312982), DenseVector(0.2654361628545741, 0.1808231551039496, 0.5537406820414763), DenseVector(0.16610529121519005, 0.0931117660162738, 0.7407829427685361), DenseVector(0.19294157684740337, 0.12142131065381342, 0.6856371124987832), DenseVector(0.0882045303631292, 0.36481542952696133, 0.5469800401099094), DenseVector(0.2689219389046643, 0.030888880896081147, 0.7001891801992545), DenseVector(0.3986229786778934, 0.04500829862220237, 0.5563687226999042), DenseVector(0.4873659808910437, 0.11601227609192555, 0.3966217430170308), DenseVector(0...
+
+scala> val expFam = new Dirichlet.ExpFam(DenseVector.zeros[Double](3))
+expFam: breeze.stats.distributions.Dirichlet.ExpFam[breeze.linalg.DenseVector[Double],Int] = breeze.stats.distributions.Dirichlet$ExpFam@552a9412
+
+scala> val SuffStat = data0.foldLeft(expFam.emptySufficientStatistic){(x,y) => x + expFam.sufficientStatisticFor(y)}
+SuffStat: expFam.SufficientStatistic = SufficientStatistic(10000.0,DenseVector(-14225.597912074167, -19243.43475699426, -6491.273077341531))
+
+scala> val Estimate = expFam.mle(SuffStat)
+Estimate: breeze.linalg.DenseVector[Double] = DenseVector(3.028187621089931, 2.0144673616341886, 6.006459859228779)
+
+scala> 
