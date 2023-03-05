@@ -1,0 +1,4 @@
+在 http://stat.ethz.ch/R-manual/R-devel/library/datasets/html/longley.html 中对数据 Longley's Economic Regression Data 进行了介绍，仔细阅读后做如下分析：
+(1) 检查复共线性；
+(2) 使用主成分回归解决复共线性，选择适当个数的主成分；
+(3) 使用岭回归解决复共线性，并采用不同方法估计岭参数。

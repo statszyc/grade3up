@@ -1,0 +1,177 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{listings}
+\lstset{
+	breaklines,                                 % 自动将长的代码行换行排版
+	extendedchars=false,                        % 解决代码跨页时，章节标题，页眉等汉字不显示的问题
+	backgroundcolor=\color[rgb]{0.96,0.96,0.96},% 背景颜色
+	keywordstyle=\color{blue}\bfseries,         % 关键字颜色
+	identifierstyle=\color{black},              % 普通标识符颜色
+	commentstyle=\color[rgb]{0,0.6,0},          % 注释颜色
+	stringstyle=\color[rgb]{0.58,0,0.82},       % 字符串颜色
+	showstringspaces=false,                     % 不显示字符串内的空格
+	numbers=left,                               % 显示行号
+	captionpos=t,                               % title在上方(在bottom即为b)
+	frame=single,                               % 设置代码框形式
+	rulecolor=\color[rgb]{0.8,0.8,0.8},         % 设置代码框颜色
+}  
+
+
+
+%\usepackage{xeCJK}
+\usepackage{times}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{array}  
+\usepackage{fontspec,xunicode,xltxtra}
+\usepackage{titlesec}
+\usepackage{titletoc}
+\usepackage[titletoc]{appendix}
+\usepackage[top=30mm,bottom=30mm,left=20mm,right=20mm]{geometry}
+\usepackage{cite}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+\usepackage[framed,numbered,autolinebreaks,useliterate]{mcode} % 插入代码
+\XeTeXlinebreaklocale "zh"
+\XeTeXlinebreakskip = 0pt plus 1pt minus 0.1pt
+
+
+
+%---------------------------------------------------------------------
+%	章节标题设置
+%---------------------------------------------------------------------
+\titleformat{\chapter}{\centering\zihao{-1}\heiti}{实验\chinese{chapter}}{1em}{}
+\titlespacing{\chapter}{0pt}{*0}{*6}
+
+%---------------------------------------------------------------------
+%	摘要标题设置
+%---------------------------------------------------------------------
+\renewcommand{\abstractname}{\zihao{-3} 摘\quad 要}
+
+%---------------------------------------------------------------------
+%	参考文献设置
+%---------------------------------------------------------------------
+%\renewcommand{\bibname}{\zihao{2}{\hspace{\fill}参\hspace{0.5em}考\hspace{0.5em}文\hspace{0.5em}献\hspace{\fill}}}
+
+%---------------------------------------------------------------------
+%	引用文献设置为上标
+%---------------------------------------------------------------------
+\makeatletter
+\def\@cite#1#2{\textsuperscript{[{#1\if@tempswa , #2\fi}]}}
+\makeatother
+
+%---------------------------------------------------------------------
+%	目录页设置
+%---------------------------------------------------------------------
+%\titlecontents{chapter}[0em]{\songti\zihao{-4}}{\thecontentslabel\ }{}
+%{\hspace{.5em}\titlerule*[4pt]{$\cdot$}\contentspage}
+%\titlecontents{section}[2em]{\vspace{0.1\baselineskip}\songti\zihao{-4}}{\thecontentslabel\ }{}{\hspace{.5em}\titlerule*[4pt]{$\cdot$}\contentspage}
+%\titlecontents{subsection}[4em]{\vspace{0.1\baselineskip}\songti\zihao{-4}}{\thecontentslabel\ }{}{\hspace{.5em}\titlerule*[4pt]{$\cdot$}\contentspage}
+
+
+\usepackage{ctex}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{array}
+\begin{document}
+	\section{第一问}
+	\subsection{累计规模法介绍}
+	记总量为$N$，各单元的规模为$\{M_i\}_{i=1,\cdots,N}$，累计规模$C_k=\sum_{i=1}^{k}M_i,k=1,\cdots,N$，其中$C_0=0$。累计规模法会生成
+	区间列$\{I_i\}_{i=1,\cdots,N}$，其中$I_i=[C_{i-1}+1,C_{i}]$。
+
+	然后在$[1,max\{M_1,\cdots,M_N\}]$生成$n$个随机整数$\{Z_i\}_{i=1,\cdots,n}$，其中$n$为样本容量。
+	对每一个$i=1,\cdots,n$，若$Z_i$落在了区间$I_j$中，则第j个总体入样。
+	\subsection{R语言PPS抽样}
+
+    以数据集中的popn（人口数）作为规模，确定每个州被抽中的概率。设第i个州的人口数
+    为$P_i$，则其被抽中的概率应为$\phi_i=\frac{P_i}{\sum_{j=1}^{n}P_j}$。R语言代码如下：
+
+	\begin{lstlisting}[language=r,breaklines]
+		df<-read.csv("statepps.csv")
+		library("sampling")
+		library("survey")
+		N=nrow(df)
+		n=10
+		pik=inclusionprobabilities(df$popn, n)
+		s=UPmultinomial(pik)
+		df.pps = df[s!=0, ]
+		Z=pik[s!=0]/n #每个单元被抽中的概率
+		Q=s[s!=0] #每个单元被抽中的次数
+	\end{lstlisting}
+	
+	\subsection{参数估计}
+	
+	总体总量的无偏估计应为：
+	$$\hat{Y}_{HH}=\frac{1}{n}\sum_{i=1}^{n}\frac{y_i}{\phi_i}$$
+
+	方差的无偏估计应为：
+	$$Var(\hat{Y}_{HH})=\frac{1}{n(n-1)}\sum_{i=1}^{n}(\frac{y_i}{\phi_i}-\hat{Y}_{HH})^2$$
+
+	估计标准误为：
+	$$SE=\sqrt{Var(\hat{Y}_{HH})}$$
+
+	R语言代码如下：
+	\begin{lstlisting}[language=r,breaklines]
+		Yhh=mean(df.pps$counties/Z*Q)
+		vars=1/(n*(n-1))*sum((df.pps$counties/Z-Yhh)^2*Q)
+		std=sqrt(vars)
+	\end{lstlisting}
+	输出结果为：$\hat{Y}_{HH}=3686.316$，$SE=655.797$
+	\section{第二问}
+	\subsection{参数估计原理}
+
+	先用ssu样本估计各psu的$\hat{Y}_{HH_i}$，各psu的总量的估计为:
+	$$\hat{Y}_{HH_i}=\frac{M_i}{k_i}\sum_{j=1}^{k_i}y_{ij}$$
+	其中$k_i$是第i个psu的中抽取的ssu的样本个数。
+	
+	然后可以求总体总量的估计：$$\hat{Y}_{HH}=\frac{1}{n}\sum_{i=1}^{n}\frac{\hat{Y}_{HH_i}}{\phi_i}$$
+
+	方差的无偏估计应为：
+	$$Var(\hat{Y}_{HH})=\frac{1}{n(n-1)}\sum_{i=1}^{n}(\frac{\hat{Y}_{HH_i}}{\phi_i}-\hat{Y}_{HH})^2$$
+
+	估计标准误为：
+	$$SE=\sqrt{Var(\hat{Y}_{HH})}$$
+
+	\subsection{计算}
+
+	本题中，psu样本数$n=10$。
+
+	用题中数据计算的结果如下表。
+
+	\newpage
+
+	\begin{table}[]
+		\centering
+		\begin{tabular}{lll}
+		学院编号 & $\phi_i$ & $\hat{Y}_{HH_i}$ \\
+		14   &     0.08054523         &          113.75                           \\
+		23   &     0.03097893         &          31.25                           \\
+		9    &     0.05947955         &          12                           \\
+		14   &     0.08054523         &          48.75                           \\
+		16   &     0.002478315        &          2                           \\
+		6    &     0.07682776         &          139.5                           \\
+		14   &     0.08054523         &          65                           \\
+		19   &     0.07682776         &          77.5                           \\
+		21   &     0.07558860         &          122                           \\
+		11   &     0.05080545         &          225.5                          
+		\end{tabular}
+		\end{table}
+
+	算得其总量的估计为$$\hat{Y}_{HH}=\frac{1}{n}\sum_{i=1}^{n}\frac{\hat{Y}_{HH_i}}{\phi_i}\approx 1371.9$$
+
+	标准误为：$$SE=\sqrt{\frac{1}{n(n-1)}\sum_{i=1}^{n}(\frac{\hat{Y}_{HH_i}}{\phi_i}-\hat{Y}_{HH})^2} \approx 372.980$$
+	\subsection{Lahiri方法介绍}
+	设总体中有N个个体，第i个单元的规模为$M_i$，涉及的抽样均为有放回的抽样。
+
+	1. 抽取随机数$i\in \{1,\cdots,N\}$
+
+	2. 抽取随机数$M\in \{1,\cdots,max\{M_1,\cdots,M_N\}\}$
+
+	3. 若$M_i\geq M$，则第i个样本入样，否则不入样。
+
+	4. 重复上述过程，直至抽满n个单元
+\end{document}=====

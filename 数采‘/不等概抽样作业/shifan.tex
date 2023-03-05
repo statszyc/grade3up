@@ -1,0 +1,814 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{listings}
+\lstset{
+	breaklines,                                 % 自动将长的代码行换行排版
+	extendedchars=false,                        % 解决代码跨页时，章节标题，页眉等汉字不显示的问题
+	backgroundcolor=\color[rgb]{0.96,0.96,0.96},% 背景颜色
+	keywordstyle=\color{blue}\bfseries,         % 关键字颜色
+	identifierstyle=\color{black},              % 普通标识符颜色
+	commentstyle=\color[rgb]{0,0.6,0},          % 注释颜色
+	stringstyle=\color[rgb]{0.58,0,0.82},       % 字符串颜色
+	showstringspaces=false,                     % 不显示字符串内的空格
+	numbers=left,                               % 显示行号
+	captionpos=t,                               % title在上方(在bottom即为b)
+	frame=single,                               % 设置代码框形式
+	rulecolor=\color[rgb]{0.8,0.8,0.8},         % 设置代码框颜色
+}  
+
+
+
+%\usepackage{xeCJK}
+\usepackage{times}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{array}  
+\usepackage{fontspec,xunicode,xltxtra}
+\usepackage{titlesec}
+\usepackage{titletoc}
+\usepackage[titletoc]{appendix}
+\usepackage[top=30mm,bottom=30mm,left=20mm,right=20mm]{geometry}
+\usepackage{cite}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+\usepackage[framed,numbered,autolinebreaks,useliterate]{mcode} % 插入代码
+\XeTeXlinebreaklocale "zh"
+\XeTeXlinebreakskip = 0pt plus 1pt minus 0.1pt
+
+%---------------------------------------------------------------------
+%	页眉页脚设置
+%---------------------------------------------------------------------
+\fancypagestyle{plain}{
+	\pagestyle{fancy}      %改变章节首页页眉
+}
+
+\pagestyle{fancy}
+\lhead{\kaishu~数据科学导论实践报告~}
+\rhead{\kaishu~第30组~}
+\cfoot{\thepage}
+
+%---------------------------------------------------------------------
+%	章节标题设置
+%---------------------------------------------------------------------
+\titleformat{\chapter}{\centering\zihao{-1}\heiti}{实验\chinese{chapter}}{1em}{}
+\titlespacing{\chapter}{0pt}{*0}{*6}
+
+%---------------------------------------------------------------------
+%	摘要标题设置
+%---------------------------------------------------------------------
+\renewcommand{\abstractname}{\zihao{-3} 摘\quad 要}
+
+%---------------------------------------------------------------------
+%	参考文献设置
+%---------------------------------------------------------------------
+%\renewcommand{\bibname}{\zihao{2}{\hspace{\fill}参\hspace{0.5em}考\hspace{0.5em}文\hspace{0.5em}献\hspace{\fill}}}
+
+%---------------------------------------------------------------------
+%	引用文献设置为上标
+%---------------------------------------------------------------------
+\makeatletter
+\def\@cite#1#2{\textsuperscript{[{#1\if@tempswa , #2\fi}]}}
+\makeatother
+
+%---------------------------------------------------------------------
+%	目录页设置
+%---------------------------------------------------------------------
+%\titlecontents{chapter}[0em]{\songti\zihao{-4}}{\thecontentslabel\ }{}
+%{\hspace{.5em}\titlerule*[4pt]{$\cdot$}\contentspage}
+%\titlecontents{section}[2em]{\vspace{0.1\baselineskip}\songti\zihao{-4}}{\thecontentslabel\ }{}{\hspace{.5em}\titlerule*[4pt]{$\cdot$}\contentspage}
+%\titlecontents{subsection}[4em]{\vspace{0.1\baselineskip}\songti\zihao{-4}}{\thecontentslabel\ }{}{\hspace{.5em}\titlerule*[4pt]{$\cdot$}\contentspage}
+
+
+\usepackage{ctex}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{array}
+\begin{document}
+	\begin{titlepage}
+		\begin{center}
+			
+			\includegraphics[width=0.5\textwidth]{Njust}\\
+			\vspace{10mm}
+			%\textbf{\zihao{2}\kaishu{统计与数据科学学院}}\\[0.8cm]
+			\vspace{40mm}
+			\textbf{\zihao{2}\kaishu{数据科学导论实践报告}}\\%[3cm]
+		\end{center}
+		
+		\vspace{\fill}
+		
+		\setlength{\extrarowheight}{3mm}
+		{\songti\zihao{3}	
+			
+			
+			\begin{center}
+				\zihao{3}\kaishu{第30组}\\
+				张颖川（2013554）\ 周雨晴（2013614）\\ 王钰迪（2012791）\ 张子晔（2012284）
+			\end{center}
+			
+			\begin{center}
+				\vspace{\fill}
+				\zihao{4}
+				%2021\textasciitilde 2022第二学期\\
+				\today
+			\end{center}	
+		}
+	\end{titlepage}
+\newpage
+	\tableofcontents
+	\newpage
+	\section{Part 1}
+	在仅知道模型预测准确率和测试集样本容量的情况下，我们无法对M1和M2的优劣性作出判断，原因如下：
+	
+	（1）	数据集高度偏斜。这意味着如果我们总将信用卡交易预测为“未出现欺诈”，无论测试集如何选取，都依然能够获得极高的准确率。但显然，这样的预测并没有达到预期目的，因此不能仅通过预测准确率来判断模型的好坏；
+	
+	（2）	该分类问题的是为了识别欺诈的信用卡交易，其实际意义也意味着仅考虑准确率是远远不够的。考虑到问题的实际意义，在机器预测发生错误时，两种错误类型，即FP（False Positive，即发生的交易实际为非欺诈，但预测为欺诈）和FN（False Negative，即发生的交易实际为欺诈，但预测为非欺诈）所造成的后果是不同的。显然，发生FN这样的错误所造成的后果更为严重。因此，一个模型的好坏必须考虑其犯FN错误的概率，而仅考虑整体的准确率是不够的。
+	
+	综上，对于此类问题，准确率并不适用于模型评估。对于不平衡数据分类问题的模型评估，我们必须综合考虑查全率（即召回，定义为$\frac{TP}{TP+FN}$）及查准率（即精确度，定义为$\frac{TP}{TP+FP}$）进行评估。可能的评估方法有：
+	
+	（1）	ROC曲线
+	
+	分别绘制不同模型的ROC曲线，比较不同模型的ROC曲线右下部的面积（即AUC值），面积越大则模型综合性越好。同时，如果问题的实际意义对查全率或查准率指标具有一定的要求（如对于信用卡欺诈问题，我们非常不希望将阳性错判为阴性，则希望在保证一定的查准率的前提下尽可能提高查全率），则我们可以先保证较为次要的指标（如信用卡欺诈问题下我们先保证查准率不小于某个阈值），再对另一指标进行比较。
+	
+	（2）	F-score
+	
+	既然考虑用精确度和召回代替准确度，而精确度和召回又是互相制约的，那自然的想法就是将二者平均考虑。构造二者的调和平均数F-score：
+	
+	$$
+	F-score=(1+a^2) \cdot \frac{Precision \cdot Recall}{a^2 \cdot Precision + Recall}
+	$$
+	
+	其中$a$表示精确度和召回的权重。针对不同的实际问题，我们可以调整$a$的值来对模型进行评估。若$a=1$，则精确度和召回同等重要；若$a>1$，则召回权重更大，即认为召回更重要；若$a<1$，则精确度权重更大，也更重要（显然，对于信用卡欺诈问题我们应该选择大于1的$a$）。
+	
+	
+	
+	\section{Part 2}
+	\subsection{问题定义}
+	 本题是利用分类模型对信用卡欺诈进行识别，来避免顾客对他们没有购买的商品收取费用。对不平衡数据集"creditcard"进行预处理，用以训练分类模型达成识别欺诈的目的。
+	\subsection{数据集介绍与探索性数据分析(EDA)}
+	本数据集是2013年9月欧洲持卡人的信用卡交易数据。284807个交易中有492个欺诈，正类(欺诈)占所有交易的0.172\%。这说明此数据集含有的数据高度不平衡，需要在建模和评估时谨慎处理。
+	
+	首先，进行探索性数据分析(EDA)。部分相关代码如下。
+%	\usepackage{listings}
+%	\lstset{ %
+%		language=Octave,                % the language of the code
+%		basicstyle=\footnotesize,           % the size of the fonts that are used for the code
+%		numbers=left,                   % where to put the line-numbers
+%		numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+%		stepnumber=2,                   % the step between two line-numbers. If it's 1, each line
+%		% will be numbered
+%		numbersep=5pt,                  % how far the line-numbers are from the code
+%		backgroundcolor=\color{white},      % choose the background color. You must add \usepackage{color}
+%		showspaces=false,               % show spaces adding particular underscores
+%		showstringspaces=false,         % underline spaces within strings
+%		showtabs=false,                 % show tabs within strings adding particular underscores
+%		frame=single,                   % adds a frame around the code
+%		rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+%		tabsize=2,                      % sets default tabsize to 2 spaces
+%		captionpos=b,                   % sets the caption-position to bottom
+%		breaklines=true,                % sets automatic line breaking
+%		breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+%		title=\lstname,                 % show the filename of files included with \lstinputlisting;
+%		% also try caption instead of title
+%		keywordstyle=\color{blue},          % keyword style
+%		commentstyle=\color{gray},       % comment style
+%%		stringstyle=\color{m},         % string literal style
+%		escapeinside={\%*}{*)},            % if you want to add LaTeX within your code
+%		morekeywords={*,...}               % if you want to add more keywords to the set
+%	}
+%\begin{lstlisting}[language = python, numbers=left, 
+%	numberstyle=\tiny,keywordstyle=\color{blue!70},
+%	commentstyle=\color{red!50!green!50!blue!50},frame=shadowbox,
+%	rulesepcolor=\color{red!20!green!20!blue!20},basicstyle=\ttfamily]
+%	#加载数据文件
+%	df = pd.read_csv("creditcard.csv")
+%	#查看数据维度
+%	print("数据维度：")
+%	print(df.shape)
+%	#查看前5行数据
+%	df.head()
+%	#查看数据的描述
+%	print("数据的描述：")
+%	print(df.describe())
+%	#检查是否有missing value
+%	print("检查是否有missing value：")
+%	print(df.isnull().sum())
+%	#查看数据类型
+%	print("数据类型：")
+%	print(df.dtypes)
+%	#查看数据集的分布 发现是极不平衡的二分类问题
+%	sns.countplot('Class', data=df)
+%	plt.title("Class", fontsize=14)
+%	plt.show()
+%	
+%\end{lstlisting}
+
+	\begin{lstlisting}[language=python, breaklines]
+		#加载数据文件
+		df = pd.read_csv("creditcard.csv")
+		#查看数据维度
+		print("数据维度：")
+		print(df.shape)
+		#查看前5行数据
+		df.head()
+		#查看数据的描述
+		print("数据的描述：")
+		print(df.describe())
+		#检查是否有missing value
+		print("检查是否有missing value：")
+		print(df.isnull().sum())
+		#查看数据类型
+		print("数据类型：")
+		print(df.dtypes)
+		#查看数据集的分布 发现是极不平衡的二分类问题
+		sns.countplot('Class', data=df)
+		plt.title("Class", fontsize=14)
+		plt.show()#is a test
+	\end{lstlisting}
+	
+	\newpage
+	在python中绘制Class分布图和Amount、Time分布图如下。
+	
+	\begin{figure*}[ht]%排版位置参数
+		\centering
+		\subfloat[Class分布图]{\includegraphics[width=0.5\textwidth]{q21}}
+		\hfill 	
+		\subfloat[Amount、Time分布图]{\includegraphics[width=0.5\textwidth]{q22}}
+		\caption{Class分布图和Amount、Time分布图}
+	\end{figure*}
+%	\begin{figure}[htbp]%排版位置参数
+%		\centering%位置参数
+%		\includegraphics[scale=0.4]{q22}
+%		\caption{Amount、Time分布图}
+%	\end{figure}
+	\subsection{数据预处理}
+	
+	经isnull().sum()函数验证，数据集不含缺失值，因此不需要进行缺失值填充。由于数据集只包含数值输入变量，是PCA转换的结果，而功能V1, V2,...,V28是用主成分分析得到的主成分，唯一没有用主成分分析变换的特征是“Time”和“Amount”，因此我们只需要对Time和Amount列进行必要的预处理。我们发现与其余变量相比，Time变量中的值不连续，而Amount变量中的值变化范围很大，这可能导致Amount数据中一些数值较小的数据所对应的行的重要性被忽略了。因此我们需要对Time列和Amount列进行归一化和标准化。这不仅可以加快梯度下降求最优解的速度，保证机器学习模型求解最优解时的收敛性，也可以提高需要计算样本距离的分类器（如kNN）的精度。我们利用sklearn.preprocessing包中的StandardScaler()函数和fit\_transform()函数把数据转换成标准的正态分布。标准化前后前5行数据的对比如图所示。	
+	\begin{figure*}[h]%排版位置参数
+		\centering%位置参数
+%		\includegraphics[scale=0.4]{q23}
+		\subfloat{\includegraphics[width=0.5\textwidth]{q23}}
+		\hfill
+		\centering
+		\subfloat{\includegraphics[width=0.45\textwidth]{q24}}
+			\caption{标准化前后前5行数据对比图}
+%		\caption{Amount、Time分布图}
+	\end{figure*}
+%\begin{figure}[h]%排版位置参数
+%	\centering%位置参数
+%	\includegraphics[scale=0.4]{q24}
+%	\caption{标准化前后前5行数据对比图}
+%\end{figure}
+\subsection{处理不平衡的数据}
+本题是一种不平衡（class-imbalance）的二分类问题。在这种情况下，如果直接套用机器学习的模型（如kNN、DT），模型会花费绝大多数的时间去拟合99\%以上的目标为0的样本，但检测出目标为1（本题中为“诈骗”）的样本更加重要。
+
+\begin{figure}[h]%排版位置参数
+	\centering%位置参数
+	\includegraphics[scale=0.3]{q25}
+	\caption{原始数据集}
+\end{figure}
+%\begin{figure*}[ht]%排版位置参数
+%	\centering%位置参数
+%	\subfloat{\includegraphics[scale=0.2]{q25}}
+%	\caption{原始数据集}
+%	\hfill
+%	\subfloat{
+%		\includegraphics[scale=0.03]{q26}}
+%	\caption{过采样、欠采样、SMOTE示意图}
+%	\subfloat[原始数据集]{\includegraphics[width=0.5\textwidth]{q25}}
+%	\hfill 	
+%	\subfloat[过采样、欠采样、SMOTE示意图]{\includegraphics[width=0.33\textwidth]{q26}}
+%	\caption{}
+%\end{figure*}
+
+
+从训练模型的角度来说，如果某类的样本数量很少，那么这个类别所提供的“信息”就太少。当我们以模型在训练集上的平均损失最小化作为模型的学习准则，设损失函数为0-1 loss（一种典型的均等代价的损失函数），那么优化目标就等价于错误率最小化（accuracy最大化）。考虑极端情况：1000个训练样本中，正类样本999个，负类样本1个。训练过程中在某次迭代结束后，模型把所有的样本都分为正类，虽然分错了这个负类，但是所带来的损失实在微不足道，因为此时accuracy已经是99.9\%。极有可能已经满足了停机条件或者达到最大迭代次数，停止训练。但此时模型还未能学习如何判断少数类。这是我们应当极力避免的情形。
+
+针对这种不平衡问题，我们考虑用过采样（over sampling）或欠采样（under sampling）的方法来对训练集里面样本数量较少的类别进行过采样处理，合成新的样本来缓解类不平衡；或对训练集里面样本数量较多的类别进行欠采样处理，抛弃一些样本来缓解类不平衡。
+
+由于简单的过采样方法可能会对少数类进行过拟合，而简单的欠采样方法可能会弱化一部分多数类数据的影响，从而产生偏差很大的模型，因此使用简单的过采样（over sampling）或欠采样（under sampling）方法都不是最好的选择。通过查阅文献，我们知道，在大部分情况下，过采样的效果要由于欠采样，而SMOTE（Synthetic Minority Over-sampling Technique）作为一种经典的过采样方法，结果较简单的过采样方法更加稳定。因此，我们尝试用SMOTE算法处理不平衡的数据，并在SMOTE算法中加入欠采样方法进行中和。
+
+
+\begin{figure}[h]%排版位置参数
+	\centering%位置参数
+	\includegraphics[scale=0.05]{for_PS}
+	\caption{过采样、欠采样、SMOTE示意图}
+\end{figure}
+
+\subsubsection{利用SMOTE算法处理不平衡的数据}
+\begin{table}[h]
+	\resizebox{\textwidth}{!}{
+	\begin{tabular}{l}
+		\hline\hline
+		SMOTE算法\\
+		\hline
+		1.从少数类样本中，随机选择一个样本A\\
+		2.利用kNN算法，确定k值（默认k=5），找到该样本A最近的k个样本\\
+		3.从该k个近邻样本中随机选择一个样本\\
+		4.生成的新样本为样本A与样本B中间的一个随机点，进而生成数个新的少数类样本\\
+		\hline
+	\end{tabular}}
+	\caption{SMOTE算法步骤}
+\end{table}
+
+利用imblearn.over\_sampling中的fit\_resample()函数进行自动转换，在少数类中创建许多新的合成样本来平衡数据集分布。合成完成后，利用print(y\_new.value\_counts())进行查看，发现标签类中0和1均有284315个数据，这说明数据集已经扩充完毕，新的数据集是平衡的。
+
+\begin{figure}[h]%排版位置参数
+	\centering%位置参数
+	\includegraphics[scale=0.3]{q27}
+	\caption{SMOTE处理后的数据集}
+\end{figure}
+\subsubsection{综合SMOTE+欠采样处理不平衡的数据}
+由于只使用SMOTE算法会产生类似于过采样方法的缺点，我们尝试综合SMOTE算法和欠采样方法处理数据，期望达到更好的效果。我们选取欠采样中的RandomUnderSampler函数，为便于对比，调整参数sampling\_strategy=1，保证本方法和只应用SMOTE生成的数据集大小一致。
+%\begin{figure*}[h]%排版位置参数
+%	\centering%位置参数
+%	%		\includegraphics[scale=0.4]{q23}
+%	\subfloat[SMOTE处理后的数据集]{\includegraphics[scale=0.3]{q27}}
+%	\hfill
+%	\centering
+%	\subfloat[SMOTE+欠采样处理后的数据集]{\includegraphics[scale=0.3]{q28}}
+%	\caption{两种处理后的数据集}
+%	%		\caption{Amount、Time分布图}
+%\end{figure*}
+\begin{figure}[h]%排版位置参数
+	\centering%位置参数
+	\includegraphics[scale=0.3]{q28}
+	\caption{SMOTE+欠采样处理后的数据集}
+\end{figure}
+\subsection{特征选择与数据集拆分}
+首先利用sklearn.model\_selection中的train\_test\_split()函数进行特征选择与数据集拆分。train\_test\_split()函数常用于分裂数组或矩阵为随机的训练和测试子集，能够包装、输入、验证以及应用，然后将数据输入到单个调用中，以便在一行中拆分（也可以选择子采样）数据。
+
+根据train\_test\_split()函数的参数配置，我们选择test\_size = 0.33。输出结果如下图所示。
+\begin{figure}[h]%排版位置参数
+	\centering%位置参数
+	\includegraphics[scale=0.7]{q29}
+	\caption{数据集拆分的结果}
+\end{figure}
+至此，我们已经完成了构建模型所需的所有准备。
+\subsection{对分类模型进行训练}
+首先，我们利用train\_test\_split()函数对新的平衡的数据集进行分离，生成X\_new\_train，X\_new\_test，y\_new\_train，y\_new\_test四个数据集，并设置test比例为0.33。并利用.value()函数将dataframe类型转换为array类型，这是必不可少的一步，否则后续处理中会因数据类型不符而报错。接下来，我们利用python第三方库中的SGD、XGBoost、DT和LogisticRegression四种算法进行模型训练，并利用它们对测试样本进行分类。
+\subsubsection{随机梯度下降(SGD)}
+随机梯度下降 (SGD) 是一种简单但非常有效的方法，用于在凸损失函数（例如（线性）支持向量机和逻辑回归）下拟合线性分类器和回归器。SGD 已成功应用于文本分类和自然语言处理中经常遇到的大规模稀疏机器学习问题，有效率高和易于实施的优点。伪代码如下：
+%\newpage
+
+\begin{figure}[htb]%排版位置参数
+	\centering%位置参数
+	\includegraphics[scale=0.2]{Pseudo-code-for-the-stochastic-gradient-descent-algorithm}
+	\caption{Pseusocode of SGD}
+\end{figure}
+
+\newpage
+\subsubsection{XGBoost}
+XGBoost是基于Boosting框架的一个算法工具包，在并行计算效率、缺失值处理、预测性能上都非常强大。XGBoost使用了损失函数二阶导数，相当于函数空间中的牛顿法；运用稀疏感知策略处理缺失值；其列块设计能有效支持并行运算，提高效率。伪代码如下:
+
+
+\begin{figure}[htb]%排版位置参数
+	\centering%位置参数
+	\includegraphics[scale=1.5]{The-pseudocode-of-APSO-XGBoost}
+	\caption{Pseusocode of XGBoost}
+\end{figure}
+%\newpage
+\subsubsection{决策树(DT)}
+决策树(Decision Tree）是在已知各种情况发生概率的基础上，通过构成决策树来求取净现值的期望值大于等于零的概率，评价项目风险，判断其可行性的决策分析方法，是直观运用概率分析的一种图解法。由于这种决策分支画成图形很像一棵树的枝干，故称决策树。在机器学习中，决策树是一个预测模型，他代表的是对象属性与对象值之间的一种映射关系。伪代码如下：
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.22]{Pseudocode-of-Decision-Tree-Algorithm}
+	\caption{Pseusocode of DT}
+\end{figure}
+
+\subsubsection{逻辑回归(LR)}
+
+在统计学中，（二元）逻辑模型（或 logit 模型）是一种统计模型，它通过将事件的对数几率（几率的对数）建模为一个事件（在两个备选方案中）发生的概率是一个或多个自变量（“预测变量”）的线性组合。在回归分析中，逻辑回归[1]（或 logit 回归）正在估计逻辑模型的参数（线性组合中的系数）。伪代码如下：
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{2-TableII-1}
+	\caption{Pseusocode of LR}
+\end{figure}
+\subsection{模型评估}
+%模型训练的第一步，我们定义准确度得分函数（accuracy\_score()），对每一种方法进行分别训练，计算其准确度得分。
+
+%模型涉及到多个不同参数。有的参数需要在学习的过程中得到，而有的参数在开始学习前就需要设置。超参数是在开始学习过程之前设置值的参数，而不是通过训练得到的参数数据。它定义关于模型的更高层次的概念，如复杂性或学习能力。超参数对学习效果有很大影响，因此，我们需要选择合适的超参数。通常情况下，需要对超参数进行优化，以提高学习的性能和效果。
+%
+%在获取到最优超参数后，我们重新对以上两个模型进行了设置，训练模型并对样本结果进行预测。
+
+我们选取了accuracy\_results （结果准确率）、F1\_score\_results （F1系数）、Recall\_results （召回率）以及Precision\_results （精确度）这4个指标评估模型的效果，对每一种方法进行分别训练，计算其准确度得分。
+
+在下表中，为介绍几种评估方式的含义，我们引入以下记号：把原数据集中为正类，分类后仍为正类的样本集合记为TP（true positive）；把原数据集中为正类，但分类后为反类的样本集合记为FN（false negative）；把原数据集中为反类，但分类后为正类的样本集合记为FP（false positive）；把原数据集中为反类，分类后仍为反类的样本集合记为TN（true negative）。
+\renewcommand\arraystretch{1.85}
+\begin{table}[htbp]\huge
+	\resizebox{\textwidth}{!}{
+	\begin{tabular}{|c|c|}%
+		\hline
+		评估标准&含义及计算公式\\
+		\hline
+		Accuracy\_results&即模型对测试集样本的分类结果与测试集样本本身的分类比较，求预测准确率  $accuracy=\frac{TP+TN}{TP+TN+FP+FN}$\\
+		\hline
+		Recall\_results&其研究区域为原始类别为正类的所有样本。表示的是在该研究区域内，预测正确的样本所占的比例。  $recall=\frac{TP}{TP+FN}$\\
+		\hline
+		Precision\_results&研究区域为预测为正类的样本，表示的是在研究区域内，预测正确的样本所占比例。  $precsion=\frac{TP}{TP+FP}$\\
+		\hline
+		F1\_score\_results&\begin{tabular}[c]{@{}l@{}}
+			F1对Precision和Recall都进行了加权。其值越大越好。当F1值小时，True Positive相对增加，\\而false相对减少，即Precision和Recall都相对增加。  $\frac{2}{F_1}=\frac{1}{precision}+\frac{1}{recall}=\frac{2TP}{2TP+FP+FN}$
+		\end{tabular}\\
+		\hline
+	\end{tabular}}
+	\caption{四种评估标准的定义}
+\end{table}
+\subsection{绘制混淆矩阵}
+
+混淆矩阵也称误差矩阵，是表示精度评价的一种标准格式，用n行n列的矩阵形式来表示。具体评价指标有总体精度、制图精度、用户精度等，这些精度指标从不同的侧面反映了图像分类的精度。 在人工智能中，混淆矩阵（confusion matrix）是可视化工具，特别用于监督学习，在无监督学习一般叫做匹配矩阵。在图像精度评价中，主要用于比较分类结果和实际测得值，可以把分类结果的精度显示在一个混淆矩阵里面。混淆矩阵是通过将每个实测像元的位置和分类与分类图像中的相应位置和分类相比较计算的。
+
+部分代码如下：
+\begin{lstlisting}[language=python, breaklines]
+	# 绘制混淆矩阵函数
+	def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Purples):
+	
+	"""
+	- cm : 计算出的混淆矩阵的值
+	- classes : 混淆矩阵中每一行每一列对应的列
+	- normalize : True:显示百分比, 
+				  False:显示个数
+	"""
+	
+	if normalize:
+	cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+	print("显示百分比：")
+	np.set_printoptions(formatter={'float': '{: 0.2f}'.format})
+	print(cm)
+	else:
+	print('显示具体数字：')
+	print(cm)
+	plt.imshow(cm, interpolation='nearest', cmap=cmap)
+	plt.title(title)
+	plt.colorbar()
+	tick_marks = np.arange(len(classes))
+	plt.xticks(tick_marks, classes, rotation=45)
+	plt.yticks(tick_marks, classes)
+	plt.ylim(len(classes) - 0.5, -0.5)
+	fmt = '.2f' if normalize else 'd'
+	thresh = cm.max() / 2.
+	for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+	plt.text(j, i, format(cm[i, j], fmt),
+	horizontalalignment="center",
+	color="white" if cm[i, j] > thresh else "black")
+	plt.tight_layout()
+	plt.ylabel('True label')
+	plt.xlabel('Predicted label')
+	plt.show()
+	cnf_matrix = np.array([[TT,TF],
+	[FT,FF],
+	])
+	attack_types = ['0','1']
+	print(TT,TF,FT,FF)
+	
+	#绘制混淆矩阵
+	plot_confusion_matrix(cnf_matrix, classes=attack_types, normalize=True, title='Normalized confusion matrix')
+\end{lstlisting}
+\subsection{结果分析}
+
+我们通过训练两种分类器并利用其对样本进行了分类，并且使用各种评分和混淆矩阵进行评估，最终选择了最适合给定案例的模型。四个混淆矩阵如下：
+%\newpage
+\begin{figure}[htbp]%排版位置参数
+	\centering%位置参数
+	
+	\subfloat[SGD]{
+		\includegraphics[scale=0.27]{cm of SGD}
+	}%
+	\subfloat[XGBoost]{
+		\includegraphics[scale=0.27]{cm of xgb}
+	}%
+
+	\subfloat[Logistic Regression]{
+		\includegraphics[scale=0.27]{cm of lr}
+	}%
+	\subfloat[Decision Tree]{
+		\includegraphics[scale=0.27]{cm of dt}
+	}%
+\caption{混淆矩阵}
+\end{figure}
+%\begin{figure}[htbp]%排版位置参数
+%	\centering%位置参数
+%	\includegraphics[scale=0.2]{cm of xgb}
+%	\caption{confusion matrix of XGBoost}
+%\end{figure}
+%\begin{figure}[htbp]%排版位置参数
+%	\centering%位置参数
+%	\includegraphics[scale=0.2]{cm of lr}
+%	\caption{confusion matrix of LR}
+%\end{figure}
+%\begin{figure}[htbp]%排版位置参数
+%	\centering%位置参数
+%	\includegraphics[scale=0.2]{cm of dt}
+%	\caption{confusion matrix of DT}
+%\end{figure}
+\newpage
+我们计算了各个模型的各项评分结果和运行时间如下表：
+
+\begin{table}[htb]
+	\resizebox{\textwidth}{!}{
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		&Accuracy\_results&Recall\_results&Precision\_results&F1\_score\_results&running\_time\\
+		\hline
+		SGD&0.9460&0.9805&0.9171&0.9477&2.614s\\
+		\hline
+		XGBoost&0.9988&0.9999&0.9977&0.9988&49.067s\\
+		\hline
+		LR&0.9478&0.9198&0.9744&0.9463&6.098s\\
+		\hline
+		DT&0.9981&0.9990&0.9973&0.9981&56.404s\\
+		\hline
+	\end{tabular}}
+	\caption{评分结果和运行时间}
+\end{table}
+
+通过上表比较各个模型的准确度和运行速度，得出SGD和LR运行速度较快但是精确度较低，XGBoost和DT精确度较高但运行时间较长。其中XGBoost精确度最高，运行时间可以接受，于是我们选取XGBoost作为分类模型。
+\section{组内分工}
+王钰迪：探索性数据分析（EDA）、数据预处理、综合SMOTE算法和欠采样方法处理不平衡数据、撰写报告。
+
+周雨晴：训练SGD分类器其并利用其对测试样本进行分类再对结果进行评价，计算优化后模型的准确率、精确度、召回率、F1系数并进行比较，撰写报告。
+
+张颖川：数据可视化，模型资料和算法查找，结果分析，整理与排版论文，撰写报告。
+
+张子晔：探究不平衡数据分类问题的模型评估方法，训练XGBoost分类器其并利用其对测试样本进行分类再对结果进行评价，撰写报告。
+\section{个人收获}
+\textbf{王钰迪}
+
+之前我对python语言的了解只局限于最基本的语法，拿到这道机器学习的题目时，我刚开始的时候并没有什么思路。组内集中讨论几次之后，我们不断地摸索和改进处理问题的思路。起初我们想采用多种机器学习的模型，再进行评估和比较，但因为数据量过于庞大，即使调用sklearn中的函数也难以完成全面的学习，我们最终决定只以SGD作为优化算法，计算准确率、召回率等多个评估指标，并利用混淆矩阵进行模型评测。我负责的是数据预处理、探索性分析和不平衡数据处理的部分。起初，我完全没有意识到不平衡问题需要进行特殊的调参或过采样、欠采样处理，只是简单的做了关于Time列和Amount列的标准化处理。直到发现拿原始数据集套用机器学习模型的准确率非常之高，我才开始寻找是否有特定的处理不平衡问题的流程，最终决定用SMOTE算法进行数据初步处理。在组内讨论后，组员建议我将欠采样加入处理过程中，中和SMOTE过采样的缺点。于是我又在SMOTE中加入了RandomUnderSampler函数，但或许因为测试集的随机选择每次都不同，且少数类占比实在太少，两种方法的差别并不大。
+
+在做这次project的过程中，我最大的收获是了解了处理不平衡数据的方法、了解了imblearn包和sklearn包中的相关函数。同时，我也感受到小组合作的魅力——有一群拥有同样目标的人，在遇到困难时可以随时沟通和互相debug，总是让人觉得心安和满足。
+
+\par
+
+\textbf{周雨晴}
+
+我接触python的时间并不长，对它的了解也不超出语法和基本的包调用的范畴。当看到project2 的题目时，我甚至不能完全理解题意，在学习了好些概念后才完全明白题目的意图。最初，我们小组尝试用几种经典的机器学习模型对测试样本进行分类。但在实际操作过程中发现了很多最开始没有想到的问题。比如我试图编写DT算法来对测试集进行预测，但由于数据集太过庞大，代码在运行六个半小时后仍然没有得到结果，时长远远超出我们的预期。最后我们放弃了这个效率过低的做法，选择调用sklearn包中的函数（虽然代码还是运行了很多个小时...）。
+
+在成功利用sklearn包中函数获得准确率并进行交叉验证后，我探索了对模型进行优化的方法。在了解到超参数对学习效果的影响之后，小组决定用网格搜索求解最优超参数，以此优化模型。在对sklearn包中函数进行一定学习之后，我们了解到可以使用GridSearchCV函数获取最优超参数。为进一步验证模型的学习效果，我们又学习了多种对分类性能进行评估的方式，如precision,F1系数等，并利用它们对我们引入的模型做了评估。
+
+通过这次project，我对python语言更熟悉了一些。同时了解到了几种简单的机器学习模型的原理、相关包中函数的基本的使用方法，并学会了优化模型参数的一些方式（如网格搜索等）。小组内同学相互更加了解，更加默契了。这种小组一起思考解决问题的方法，做出尝试和努力，为同一个目标奋斗的感觉深深吸引着我。
+
+\par
+
+\textbf{张颖川}
+
+我之前只做过不涉及太多统计内容的项目，这次的项目对我是一个很大的挑战，在与组员一起学习探究了一些必要的统计与数据科学概念和手段之后才明白了如何下手。在这个过程中，我们尝试了不同的模型去对样本分类，在这个过程中，我也遇到了一些之前从未见过的困难。因为样本容量太大，我在试图自己编写SGD的时候代码运行速度过慢，经过了四个多小时仍没有结果，最后改用sklearn包中函数，也是经过了很久终于得到了结果。
+
+在编程解决问题的过程中，我负责数据可视化的工作，将组员工作的结果用图表的形式直观地展示出来，便于我们对工作进展的把握。在绘图的过程中，我仔细研究了更多的绘图函数和它们更高级的命令，力求图表准确美观。在查资料的过程中，阅读了不少英文界面，一定程度上克服了阅读大段英文的畏惧感并且有所收获。
+
+通过这次project，我对数据科学的工作流程和内容更加了解，第一次接触到了机器学习模型和较大规模数据的处理，提升了查阅资料和可视化编程的能力。同时，这是一次宝贵的小组合作经历，从读题、分工到合作编程，小组内同学始终保持了良好的沟通，遇到困难时互相鼓励，是一次效率和质量兼备的合作。我通过这次合作也与小组内的同学更加了解了，个人而言，这次合作的过程是非常愉快的，也是很有收获的。
+
+\par
+
+\textbf{张子晔}
+
+通过这次project，我主要学习了一些不平衡数据预测问题的模型评估方法，也对一些机器学习算法有了肤浅的了解。除此之外，我还参与了模型训练的部分，主要是用XGBoost算法尝试解决这个不平衡分类问题，感受亦颇深。首先对于预处理过后的大量数据，在算法的选择上我曾做过几次尝试，但由于效率问题大多都被迫放弃，而唯独XGB算法的效率和准确性震惊了我。最终我也自然选择用XGBoost算法作为一次尝试（同时非常感谢给力的组员们写好的代码，这为我这个python盲节省了不少时间。当然这也让我体会到了恰当的小组合作的高效性）。同时，也算是以此次project为契机，我希望以后可以对机器学习、深度学习有更全面的了解。
+\newpage
+\section{附录}
+\subsection{第二问代码}
+\begin{lstlisting}[language=python, breaklines]
+	import pandas as pd
+	import numpy as np
+	import seaborn as sns
+	import matplotlib.pyplot as plt
+	import time
+	import warnings
+	warnings.filterwarnings('ignore')
+	
+	#加载数据文件
+	df = pd.read_csv("creditcard.csv")
+	#查看数据维度
+	print("数据维度：")
+	print(df.shape)
+	#查看前5行数据
+	df.head()
+	#查看数据的描述
+	print("数据的描述：")
+	print(df.describe())
+	#检查是否有missing value
+	print("检查是否有missing value：")
+	print(df.isnull().sum())
+	#查看数据类型
+	print("数据类型：")
+	print(df.dtypes)
+	
+	#查看Class分布(饼图）
+	labels = ['Not Fraud', 'Fraud']
+	size = df['Class'].value_counts() # 统计class的类别数量
+	colors = ['lightblue', 'red'] # 设置颜色
+	explode = [0, 0.1] # 饼图突出
+	plt.figure(figsize=(9,9)) # 画布大小
+	plt.pie(size, colors=colors, explode=explode, labels=labels, shadow=False, autopct='%.2f%%') #参数设置
+	plt.axis('off') # 关闭坐标轴
+	plt.title("Data Distribution") # 标题
+	plt.legend() # 显示标签
+	plt.show() # 显示
+	
+	
+	# 显示Time、Amount的分布（柱状图）
+	fig, ax = plt.subplots(1, 2, figsize=(20, 4)) # 画布大小
+	amout_val = df['Amount'].values # 交易金额的数值
+	time_val = df['Time'].values # 交易时间的数值
+	sns.distplot(time_val, ax=ax[0], color='r') # 参数设置
+	ax[0].set_title('Time distribution', fontsize=14) # 标题
+	ax[0].set_xlim(min(time_val), max(time_val)) # 横轴设置
+	sns.distplot(amout_val, ax=ax[1], color='b') # 参数设置
+	ax[1].set_title('Amount distribution', fontsize=14) # 标题
+	ax[1].set_xlim(min(amout_val), max(amout_val)) # 横轴设置
+	plt.show()
+	
+	#数据预处理——对time和amount进行标准化
+	#使用StandardScaler()和fit_transform()函数
+	from sklearn.preprocessing import StandardScaler
+	df['scaled_time'] = StandardScaler().fit_transform(df['Time'].values.reshape(-1,1))
+	df['scaled_amount'] = StandardScaler().fit_transform(df['Amount'].values.reshape(-1,1))
+	df.drop(['Amount', 'Time'], axis=1, inplace=True) #删除原始的time amount列
+	
+	#显示前5行 查看标准化完成程度
+	df.head()
+	
+	#查看数据集的分布 发现是极不平衡的二分类问题
+	sns.countplot('Class', data=df)
+	plt.title("Class", fontsize=14)
+	plt.show()
+	
+	X = df.drop('Class', axis=1) # 数据集
+	y = df['Class']
+	print("X shape : ", X.shape)
+	print("y shape : ", y.shape)
+	
+	'''
+	#——————————————————————————————
+	
+	#1
+	#利用SMOTE算法处理不平衡的数据
+	from imblearn.over_sampling import SMOTE
+	X_new, y_new = SMOTE().fit_resample(X, y)
+	
+	#——————————————————————————————
+	'''
+	#2
+	#SMOTE+欠采样处理不平衡的数据
+	from imblearn.over_sampling import SMOTE
+	from imblearn.under_sampling import RandomUnderSampler
+	from imblearn.pipeline import Pipeline
+	
+	over = SMOTE(sampling_strategy=1)# SMOTE过采样
+	under = RandomUnderSampler(sampling_strategy=1)# 选取RandomUnderSampler函数进行欠采样
+	steps = [('o', over),('u', under)]# pipeline
+	pipeline = Pipeline(steps=steps)# pipeline
+	
+	X_new, y_new = pipeline.fit_resample(X, y)
+	
+	#——————————————————————————————
+	
+	#查看新的类分布 数据集已经扩充完毕
+	print("y_new.value_counts():")
+	print(y_new.value_counts())#class中0 1已数目相等
+	print("总样本数目： " + str(X_new.shape))#总样本数目
+	#可视化 查看新的数据集是否已平衡
+	import matplotlib.pyplot as plt
+	plt.bar([0,1], y_new.value_counts(),tick_label=[0,1])
+	plt.title("Class", fontsize=14)
+	plt.xlabel("Class", fontsize=10)
+	plt.ylabel("Count", fontsize=10)
+	plt.show()
+	
+	#数据集分离（分为train组和test组）
+	#生成一个新的训练集和测试集
+	from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+	X_new_train, X_new_test, y_new_train, y_new_test = train_test_split(X_new, y_new, test_size=0.33, random_state=666)#设置test比例为0.33
+	
+	#将dataframe类型转换为array类型
+	X_new_train = X_new_train.values
+	X_new_test = X_new_test.values
+	y_new_train = y_new_train.values
+	y_new_test = y_new_test.values
+	
+	print("X_new_train.shape： " + str(X_new_train.shape))
+	print("X_new_test.shape： " + str(X_new_test.shape))
+	print("y_new_train.shape： " + str(y_new_train.shape))
+	print("y_new_test.shape： " + str(y_new_test.shape))
+	
+	
+	
+	from sklearn.linear_model import SGDClassifier
+	
+	
+	# 初始化SGDClassifier。
+	sgdc = SGDClassifier()
+	
+	# 调用SGDClassifier中的fit函数训练模型参数。
+	sgdc.fit(X_new_train, y_new_train)
+	# 对X_new_test进行预测，结果储存在变量sgdc_y_predict中。
+	sgdc_y_predict = sgdc.predict(X_new_test)
+	
+	from sklearn.metrics import classification_report
+	# 使用评分函数score获得模型在测试集上的准确性结果
+	# print()
+	print ('Accuarcy of SGD Classifier:', sgdc.score(X_new_test, y_new_test))
+	# 利用classification_report模块获得SGDClassifier其他评分的结果。
+	TT=0
+	TF=0
+	FT=0
+	FF=0
+	#记录预测的结果正确、错误的个数
+	for i in range(len(y_new_test)):
+	if y_new_test[i]==0:
+	if sgdc_y_predict[i]==0:
+	TT+=1
+	else:
+	TF+=1
+	if y_new_test[i] == 1:
+	if sgdc_y_predict[i]==0:
+	FT+=1
+	else:
+	FF+=1
+	print (classification_report(y_new_test, sgdc_y_predict))
+	
+	import itertools
+	import matplotlib.pyplot as plt
+	import numpy as np
+	# 绘制混淆矩阵
+	def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Purples):
+	"""
+	- cm : 计算出的混淆矩阵的值
+	- classes : 混淆矩阵中每一行每一列对应的列
+	- normalize : True:显示百分比, False:显示个数
+	"""
+	if normalize:
+	cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+	print("显示百分比：")
+	np.set_printoptions(formatter={'float': '{: 0.2f}'.format})
+	print(cm)
+	else:
+	print('显示具体数字：')
+	print(cm)
+	plt.imshow(cm, interpolation='nearest', cmap=cmap)
+	plt.title(title)
+	plt.colorbar()
+	tick_marks = np.arange(len(classes))
+	plt.xticks(tick_marks, classes, rotation=45)
+	plt.yticks(tick_marks, classes)
+	plt.ylim(len(classes) - 0.5, -0.5)
+	fmt = '.2f' if normalize else 'd'
+	thresh = cm.max() / 2.
+	for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+	plt.text(j, i, format(cm[i, j], fmt),
+	horizontalalignment="center",
+	color="white" if cm[i, j] > thresh else "black")
+	plt.tight_layout()
+	plt.ylabel('True label')
+	plt.xlabel('Predicted label')
+	plt.show()
+	
+	
+	cnf_matrix = np.array([[TT,TF],
+	[FT,FF],
+	])
+	attack_types = ['0','1']
+	
+	print(TT,TF,FT,FF)
+	plot_confusion_matrix(cnf_matrix, classes=attack_types, normalize=True, title='Normalized confusion matrix')
+	
+	
+	#XGBoost
+	from xgboost import XGBClassifier
+	
+	xgb = XGBClassifier(max_depth = 4)    #初始化XGBClassifier
+	xgb.fit(X_new_train, y_new_train)    #训练模型
+	xgb_y_predict = xgb.predict(X_new_test)    #对X_new_test作预测
+	
+	#评估结果
+	print ('Accuarcy of XGBoost Classifier:', xgb.score(X_new_test, y_new_test))
+	print (classification_report(y_new_test, xgb_y_predict))
+	#绘制混淆矩阵
+	xgb_TP=0
+	xgb_TN=0
+	xgb_FP=0
+	xgb_FN=0
+	for i in range(len(y_new_test)):
+	if y_new_test[i]==0:
+	if xgb_y_predict[i]==0:
+	xgb_TN+=1
+	else:
+	xgb_FP+=1
+	if y_new_test[i] == 1:
+	if xgb_y_predict[i]==0:
+	xgb_FN+=1
+	else:
+	xgb_TP+=1
+	
+	xgb_cnf_matrix = np.array([[xgb_TP,xgb_FN],
+	[xgb_FP,xgb_TN],
+	])
+	attack_types = ['0','1']
+	
+	print(xgb_TP,xgb_FN,xgb_FP,xgb_TN)
+	plot_confusion_matrix(xgb_cnf_matrix, classes=attack_types, normalize=True, title='Normalized confusion matrix')
+\end{lstlisting}
+\end{document}=====
