@@ -1,0 +1,5 @@
+1. 给定dataframe  df=pd.DataFrame({"vals": np.random.RandomState(31).randint(-30, 30, size=15), "grps": np.random.RandomState(31).choice(["A", "B"], 15)})
+给df新增一列patched_vals, 如果vals相应行非负，则patched_vals等于vals，否则等于组平均值(按照grps分组)。
+2. 读入iris.csv文件到dataframe iris并增加两列：1. petal.ratio=petal.length/petal.width, 2.  sepal.ratio=sepal.length/sepal.width. 使用groupby计算不同品种鸢尾花(variety)
+的petal.ratio和sepal.ratio的mean, median, minimum, maximum, standard deviation。
+3. 对于2题中的dataframe iris，随机设置sepal.length,sepal.width,petal.length,petal.width这四列中20个值为nan，然后使用组均值来填充这20个值，并更新petal.ratio和sepal.ratio。

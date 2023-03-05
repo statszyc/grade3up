@@ -1,0 +1,39 @@
+1 餐馆：创建一个名为Restaurant 的类，其方法__init__()设置两个属性：
+restaurant_name 和cuisine_type。创建一个名为describe_restaurant()的方法和一个
+名为open_restaurant()的方法，其中前者打印前述两项信息，而后者打印一条消息，
+指出餐馆正在营业。根据这个类创建一个名为restaurant 的实例，分别打印其两个属性，
+再调用前述两个方法。
+2 三家餐馆：根据你为完成练习1 而编写的类创建三个实例，并对每个实例调
+用方法describe_restaurant()。
+3 用户：创建一个名为User 的类，其中包含属性first_name 和last_name，还有
+用户简介通常会存储的其他几个属性。在类User 中定义一个名为describe_user()的方
+法，它打印用户信息摘要；再定义一个名为greet_user()的方法，它向用户发出个性化
+的问候。创建多个表示不同用户的实例，并对每个实例都调用上述两个方法。
+4 就餐人数：在为完成练习1 而编写的程序中，添加一个名为number_served
+的属性，并将其默认值设置为0。根据这个类创建一个名为restaurant 的实例；打印有
+多少人在这家餐馆就餐过，然后修改这个值并再次打印它。
+添加一个名为set_number_served()的方法，它让你能够设置就餐人数。调用这个
+方法并向它传递一个值，然后再次打印这个值。
+添加一个名为increment_number_served()的方法，它让你能够将就餐人数递增。
+调用这个方法并向它传递一个这样的值：你认为这家餐馆每天可能接待的就餐人数。
+5 尝试登录次数：在为完成练习3 而编写的User 类中，添加一个名为
+login_attempts 的属性。编写一个名为increment_login_attempts()的方法，它将属性
+login_attempts 的值加1。再编写一个名为reset_login_attempts()的方法，它将属性
+login_attempts 的值重置为0。
+根据User 类创建一个实例，再调用方法increment_login_attempts()多次。打印属
+性login_attempts 的值，确认它被正确地递增；然后，调用方法reset_login_attempts()，
+并再次打印属性login_attempts 的值，确认它被重置为0。
+6 冰淇淋小店：冰淇淋小店是一种特殊的餐馆。编写一个名为IceCreamStand 的
+类，让它继承你为完成练习1 或练习4 而编写的Restaurant 类。这两个版本的
+Restaurant 类都可以，挑选你更喜欢的那个即可。添加一个名为flavors 的属性，用于
+存储一个由各种口味的冰淇淋组成的列表。编写一个显示这些冰淇淋的方法。创建一个
+IceCreamStand 实例，并调用这个方法。
+7 管理员：管理员是一种特殊的用户。编写一个名为Admin 的类，让它继承你为
+完成练习3 或练习5 而编写的User 类。添加一个名为privileges 的属性，用于存
+储一个由字符串（如"can add post"、"can delete post"、"can ban user"等）组成的
+列表。编写一个名为show_privileges()的方法，它显示管理员的权限。创建一个Admin
+实例，并调用这个方法。
+8 权限：编写一个名为Privileges 的类，它只有一个属性——privileges，其中
+存储了练习7 所说的字符串列表。将方法show_privileges()移到这个类中。在Admin
+类中，将一个Privileges 实例用作其属性。创建一个Admin 实例，并使用方法
+show_privileges()来显示其权限。
