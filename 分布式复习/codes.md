@@ -39,7 +39,7 @@ $f(\alpha,x)=(\frac{1}{B(\alpha)})^n\Pi_{j=1}^n\Pi_{i=1}^3x_{ij}^{\alpha_i-1}=(\
     - 第二个元素即为取log之后的结果（迪利克雷分布的充分统计量就是取log）
   - 第一个括号中的值为初值
   - x指代上一次迭代的结果，就是sufficient类型的
-  - y是从样本data0中顺序抽的，转化成sufficient类型和x相加
+  - y是从样本data0中顺序抽的，转化成sufficient类型和x相加.
   
 - ```scala
   val mle=expFam.mle(SuffStat)
